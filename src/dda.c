@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dda.c                                             :+:      :+:    :+:   */
+/*   dda.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 15:27:05 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/04 11:15:31 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 14:51:14 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,31 +22,29 @@ static void	get_map_size(t_game *game, int *width, int *height)
 		(*width)++;
 }
 
-void	perform_dda(t_player *p, t_game *game)
+void	perform_dda(t_player *p, t_game *game, int hit, int steps)
 {
-	int hit = 0;
-	int steps = 0;
-	int mapWidth, mapHeight;
+	int	map_width;
+	int	map_height;
 
-	get_map_size(game, &mapWidth, &mapHeight);
-
+	get_map_size(game, &map_width, &map_height);
 	while (!hit && steps < 1000)
 	{
-		if (p->sideDistX < p->sideDistY)
+		if (p->side_dist_x < p->side_dist_y)
 		{
-			p->sideDistX += p->deltaDistX;
-			p->mapX += p->stepX;
+			p->side_dist_x += p->delta_dist_x;
+			p->map_x += p->step_x;
 			p->side = 0;
 		}
 		else
 		{
-			p->sideDistY += p->deltaDistY;
-			p->mapY += p->stepY;
+			p->side_dist_y += p->delta_dist_y;
+			p->map_y += p->step_y;
 			p->side = 1;
 		}
-		if (p->mapY >= 0 && p->mapY < mapHeight &&
-			p->mapX >= 0 && p->mapX < mapWidth &&
-			game->map[p->mapY][p->mapX] == '1')
+		if (p->map_y >= 0 && p->map_y < map_height
+			&& p->map_x >= 0 && p->map_x < map_width
+			&& game->map[p->map_y][p->map_x] == '1')
 			hit = 1;
 		steps++;
 	}

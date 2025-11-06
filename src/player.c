@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 20:13:55 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/01 22:01:17 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 15:19:09 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,24 @@
 
 void	init_player(t_player *player)
 {
-	player->posX = 5.0;
-	player->posY = 5.0;
-	player->dirX = 0;	//UP
-	player->dirY = -1;
-	player->planeX = 0.66;
-	player->planeY = 0.0;
+	player->pos_x = 5.0;
+	player->pos_y = 5.0;
+	player->dir_x = 0;	//UP
+	player->dir_y = -1;
+	player->plane_x = 0.66;
+	player->plane_y = 0.0;
 	player->x = 0;
-	player->cameraX = 2 * player->x / WIDTH - 1;
-	player->rayDirX = player->dirX + player->planeX * player->cameraX;
-	player->rayDirY = player->dirY + player->planeY * player->cameraX;
-	player->mapX = (int)player->posX;
-	player->mapY = (int)player->posY;
-	//player->dirX = 0;	//UP
-	//player->dirY = -1;
-	//player->dirX = 0;	//UP
-	//player->dirY = -1;
-	//player->dirX = 0;	//UP
-	//player->dirY = -1;
+	player->camera_x = 2 * player->x / WIDTH - 1;
+	player->raydir_x = player->dir_x + player->plane_x * player->camera_x;
+	player->raydir_y = player->dir_y + player->plane_y * player->camera_x;
+	player->map_x = (int)player->pos_x;
+	player->map_y = (int)player->pos_y;
+	//player->dir_x = 0;	//DOWN
+	//player->dir_y = 1;
+	//player->dir_x = 1;	//RIGHT
+	//player->dir_y = 0;
+	//player->dir_x = -1;	//LEFT
+	//player->dir_y = 0;
 	player->k_up = false;
 	player->k_down = false;
 	player->k_left = false;
@@ -76,39 +76,39 @@ int	key_release(int keycode, t_player *player)
 
 static void	rotate_player(t_player *p, float rotSpeed)
 {
-	float	oldDirX = p->dirX;
-	float	oldPlaneX = p->planeX;
+	float	olddir_x = p->dir_x;
+	float	oldplane_x = p->plane_x;
 
 	if (p->l_rotate)
 	{
-		p->dirX = p->dirX * cosf(-rotSpeed) - p->dirY * sinf(-rotSpeed);
-		p->dirY = oldDirX * sinf(-rotSpeed) + p->dirY * cosf(-rotSpeed);
-		p->planeX = p->planeX * cosf(-rotSpeed) - p->planeY * sinf(-rotSpeed);
-		p->planeY = oldPlaneX * sinf(-rotSpeed) + p->planeY * cosf(-rotSpeed);
+		p->dir_x = p->dir_x * cosf(-rotSpeed) - p->dir_y * sinf(-rotSpeed);
+		p->dir_y = olddir_x * sinf(-rotSpeed) + p->dir_y * cosf(-rotSpeed);
+		p->plane_x = p->plane_x * cosf(-rotSpeed) - p->plane_y * sinf(-rotSpeed);
+		p->plane_y = oldplane_x * sinf(-rotSpeed) + p->plane_y * cosf(-rotSpeed);
 	}
 	if (p->r_rotate)
 	{
-		p->dirX = p->dirX * cosf(rotSpeed) - p->dirY * sinf(rotSpeed);
-		p->dirY = oldDirX * sinf(rotSpeed) + p->dirY * cosf(rotSpeed);
-		p->planeX = p->planeX * cosf(rotSpeed) - p->planeY * sinf(rotSpeed);
-		p->planeY = oldPlaneX * sinf(rotSpeed) + p->planeY * cosf(rotSpeed);
+		p->dir_x = p->dir_x * cosf(rotSpeed) - p->dir_y * sinf(rotSpeed);
+		p->dir_y = olddir_x * sinf(rotSpeed) + p->dir_y * cosf(rotSpeed);
+		p->plane_x = p->plane_x * cosf(rotSpeed) - p->plane_y * sinf(rotSpeed);
+		p->plane_y = oldplane_x * sinf(rotSpeed) + p->plane_y * cosf(rotSpeed);
 	}
 }
 
 static void	move_axis(t_player *p, t_game *game, float moveX, float moveY)
 {
-	int	newMapX = (int)(p->posX + moveX);
-	int	newMapY = (int)(p->posY + moveY);
-	int	mapWidth = 0;
-	int	mapHeight = 0;
+	int	newmap_x = (int)(p->pos_x + moveX);
+	int	newmap_y = (int)(p->pos_y + moveY);
+	int	map_width = 0;
+	int	map_height = 0;
 
-	while (game->map[mapHeight]) mapHeight++;
-	while (game->map[0][mapWidth]) mapWidth++;
+	while (game->map[map_height]) map_height++;
+	while (game->map[0][map_width]) map_width++;
 
-	if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
-		p->posX += moveX;
-	if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
-		p->posY += moveY;
+	if (newmap_x >= 0 && newmap_x < map_width && game->map[(int)p->pos_y][newmap_x] == '0')
+		p->pos_x += moveX;
+	if (newmap_y >= 0 && newmap_y < map_height && game->map[newmap_y][(int)p->pos_x] == '0')
+		p->pos_y += moveY;
 }
 
 void	move_player(t_game *game, t_player *p)
@@ -118,86 +118,86 @@ void	move_player(t_game *game, t_player *p)
 
 	rotate_player(p, rotSpeed);
 
-	if (p->k_up)	move_axis(p, game, p->dirX * moveSpeed, p->dirY * moveSpeed);
-	if (p->k_down)	move_axis(p, game, -p->dirX * moveSpeed, -p->dirY * moveSpeed);
-	if (p->k_left)	move_axis(p, game, -p->planeX * moveSpeed, -p->planeY * moveSpeed);
-	if (p->k_right)	move_axis(p, game, p->planeX * moveSpeed, p->planeY * moveSpeed);
+	if (p->k_up)	move_axis(p, game, p->dir_x * moveSpeed, p->dir_y * moveSpeed);
+	if (p->k_down)	move_axis(p, game, -p->dir_x * moveSpeed, -p->dir_y * moveSpeed);
+	if (p->k_left)	move_axis(p, game, -p->plane_x * moveSpeed, -p->plane_y * moveSpeed);
+	if (p->k_right)	move_axis(p, game, p->plane_x * moveSpeed, p->plane_y * moveSpeed);
 }
 
 /*void	move_player(t_game *game, t_player *p)
 {
 	float	moveSpeed = 0.1f;  // vitesse de déplacement
 	float	rotSpeed = 0.05f;  // vitesse de rotation
-	int		mapWidth;
-	int		mapHeight;
-	int		newMapX;
-	int		newMapY;
+	int		map_width;
+	int		map_height;
+	int		newmap_x;
+	int		newmap_y;
 
 	// Taille réelle de la map
-	mapHeight = 0;
-	while (game->map[mapHeight])
-		mapHeight++;
-	mapWidth = 0;
-	while (game->map[0][mapWidth])
-		mapWidth++;
+	map_height = 0;
+	while (game->map[map_height])
+		map_height++;
+	map_width = 0;
+	while (game->map[0][map_width])
+		map_width++;
 
 	// 🔄 Rotation
 	if (p->l_rotate)
 	{
-		float	oldDirX = p->dirX;
-		p->dirX = p->dirX * cosf(-rotSpeed) - p->dirY * sinf(-rotSpeed);
-		p->dirY = oldDirX * sinf(-rotSpeed) + p->dirY * cosf(-rotSpeed);
-		float	oldPlaneX = p->planeX;
-		p->planeX = p->planeX * cosf(-rotSpeed) - p->planeY * sinf(-rotSpeed);
-		p->planeY = oldPlaneX * sinf(-rotSpeed) + p->planeY * cosf(-rotSpeed);
+		float	olddir_x = p->dir_x;
+		p->dir_x = p->dir_x * cosf(-rotSpeed) - p->dir_y * sinf(-rotSpeed);
+		p->dir_y = olddir_x * sinf(-rotSpeed) + p->dir_y * cosf(-rotSpeed);
+		float	oldplane_x = p->plane_x;
+		p->plane_x = p->plane_x * cosf(-rotSpeed) - p->plane_y * sinf(-rotSpeed);
+		p->plane_y = oldplane_x * sinf(-rotSpeed) + p->plane_y * cosf(-rotSpeed);
 	}
 	if (p->r_rotate)
 	{
-		float	oldDirX = p->dirX;
-		p->dirX = p->dirX * cosf(rotSpeed) - p->dirY * sinf(rotSpeed);
-		p->dirY = oldDirX * sinf(rotSpeed) + p->dirY * cosf(rotSpeed);
-		float	oldPlaneX = p->planeX;
-		p->planeX = p->planeX * cosf(rotSpeed) - p->planeY * sinf(rotSpeed);
-		p->planeY = oldPlaneX * sinf(rotSpeed) + p->planeY * cosf(rotSpeed);
+		float	olddir_x = p->dir_x;
+		p->dir_x = p->dir_x * cosf(rotSpeed) - p->dir_y * sinf(rotSpeed);
+		p->dir_y = olddir_x * sinf(rotSpeed) + p->dir_y * cosf(rotSpeed);
+		float	oldplane_x = p->plane_x;
+		p->plane_x = p->plane_x * cosf(rotSpeed) - p->plane_y * sinf(rotSpeed);
+		p->plane_y = oldplane_x * sinf(rotSpeed) + p->plane_y * cosf(rotSpeed);
 	}
 
 	// 🔄 Déplacement avant/arrière
 	if (p->k_up)
 	{
-		newMapX = (int)(p->posX + p->dirX * moveSpeed);
-		newMapY = (int)(p->posY + p->dirY * moveSpeed);
-		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
-			p->posX += p->dirX * moveSpeed;
-		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
-			p->posY += p->dirY * moveSpeed;
+		newmap_x = (int)(p->pos_x + p->dir_x * moveSpeed);
+		newmap_y = (int)(p->pos_y + p->dir_y * moveSpeed);
+		if (newmap_x >= 0 && newmap_x < map_width && game->map[(int)p->pos_y][newmap_x] == '0')
+			p->pos_x += p->dir_x * moveSpeed;
+		if (newmap_y >= 0 && newmap_y < map_height && game->map[newmap_y][(int)p->pos_x] == '0')
+			p->pos_y += p->dir_y * moveSpeed;
 	}
 	if (p->k_down)
 	{
-		newMapX = (int)(p->posX - p->dirX * moveSpeed);
-		newMapY = (int)(p->posY - p->dirY * moveSpeed);
-		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
-			p->posX -= p->dirX * moveSpeed;
-		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
-			p->posY -= p->dirY * moveSpeed;
+		newmap_x = (int)(p->pos_x - p->dir_x * moveSpeed);
+		newmap_y = (int)(p->pos_y - p->dir_y * moveSpeed);
+		if (newmap_x >= 0 && newmap_x < map_width && game->map[(int)p->pos_y][newmap_x] == '0')
+			p->pos_x -= p->dir_x * moveSpeed;
+		if (newmap_y >= 0 && newmap_y < map_height && game->map[newmap_y][(int)p->pos_x] == '0')
+			p->pos_y -= p->dir_y * moveSpeed;
 	}
 
 	// 🔄 Déplacement latéral (strafe)
 	if (p->k_left)
 	{
-		newMapX = (int)(p->posX - p->planeX * moveSpeed);
-		newMapY = (int)(p->posY - p->planeY * moveSpeed);
-		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
-			p->posX -= p->planeX * moveSpeed;
-		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
-			p->posY -= p->planeY * moveSpeed;
+		newmap_x = (int)(p->pos_x - p->plane_x * moveSpeed);
+		newmap_y = (int)(p->pos_y - p->plane_y * moveSpeed);
+		if (newmap_x >= 0 && newmap_x < map_width && game->map[(int)p->pos_y][newmap_x] == '0')
+			p->pos_x -= p->plane_x * moveSpeed;
+		if (newmap_y >= 0 && newmap_y < map_height && game->map[newmap_y][(int)p->pos_x] == '0')
+			p->pos_y -= p->plane_y * moveSpeed;
 	}
 	if (p->k_right)
 	{
-		newMapX = (int)(p->posX + p->planeX * moveSpeed);
-		newMapY = (int)(p->posY + p->planeY * moveSpeed);
-		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
-			p->posX += p->planeX * moveSpeed;
-		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
-			p->posY += p->planeY * moveSpeed;
+		newmap_x = (int)(p->pos_x + p->plane_x * moveSpeed);
+		newmap_y = (int)(p->pos_y + p->plane_y * moveSpeed);
+		if (newmap_x >= 0 && newmap_x < map_width && game->map[(int)p->pos_y][newmap_x] == '0')
+			p->pos_x += p->plane_x * moveSpeed;
+		if (newmap_y >= 0 && newmap_y < map_height && game->map[newmap_y][(int)p->pos_x] == '0')
+			p->pos_y += p->plane_y * moveSpeed;
 	}
 }*/

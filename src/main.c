@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:28:56 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/02 16:37:39 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 15:16:35 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,21 +111,20 @@ void	draw_map(t_game *game)
 	}
 }
 
-#include <stdio.h>
-
 int	draw_loop(t_game *game)
 {
-	t_player	*player;
+	t_player	*p;
 
-	player = &game->player;
-	move_player(game, player);
+	p = &game->player;
+	move_player(game, p);
 	clear_img(game);
 	if (DEBUG == 1)
 	{
-		draw_square(player->posX - 3, player->posY - 3, 6, 0x00FF00, game);
+		draw_square(p->pos_x * BLOCK, p->pos_y * BLOCK, 6, 0x00FF00, game);
 		draw_map(game);
 	}
-	raycast(player, game);
+	if (DEBUG == 0)
+		raycast(p, game);
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 	return (0);
 }
@@ -137,16 +136,14 @@ static int	close_window(t_game *game)
 	return (0);
 }
 
-
 int	main(void)
 {
 	t_game	game;
 
 	init_game(&game);
-	//mlx_hook(game.window, 17, 0, close_window, &game);
 	mlx_hook(game.window, 17, 0, close_window, &game);
-	mlx_hook(game.window, 2, 1L<<0, key_press, &game.player);
-	mlx_hook(game.window, 3, 1L<<1, key_release, &game.player);
+	mlx_hook(game.window, 2, 1L << 0, key_press, &game.player);
+	mlx_hook(game.window, 3, 1L << 1, key_release, &game.player);
 	mlx_loop_hook(game.mlx, draw_loop, &game);
 	mlx_loop(game.mlx);
 }

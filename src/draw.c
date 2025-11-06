@@ -6,40 +6,69 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 15:27:05 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/04 11:15:31 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 17:48:22 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
+static void	calc_ray_bis(t_player *p, int x)
+{
+	p->camera_x = 2.0f * x / (float)WIDTH - 1.0f;
+	p->raydir_x = p->dir_x + p->plane_x * p->camera_x;
+	p->raydir_y = p->dir_y + p->plane_y * p->camera_x;
+	p->map_x = (int)p->pos_x;
+	p->map_y = (int)p->pos_y;
+	if (p->raydir_x == 0.0f)
+		p->delta_dist_x = 1e6f;
+	else
+		p->delta_dist_x = fabsf(1.0f / p->raydir_x);
+	//p->delta_dist_x = (p->raydir_x == 0.0f) ? 1e6f : fabsf(1.0f / p->raydir_x);
+	if (p->raydir_y == 0.0f)
+		p->delta_dist_y = 1e6f;
+	else
+		p->delta_dist_y = fabsf(1.0f / p->raydir_y);
+	//p->delta_dist_y = (p->raydir_y == 0.0f) ? 1e6f : fabsf(1.0f / p->raydir_y);
+}
+
 static void	calc_ray(t_player *p, int x)
 {
-	p->cameraX = 2.0f * x / (float)WIDTH - 1.0f;
-	p->rayDirX = p->dirX + p->planeX * p->cameraX;
-	p->rayDirY = p->dirY + p->planeY * p->cameraX;
-	p->mapX = (int)p->posX;
-	p->mapY = (int)p->posY;
-	p->deltaDistX = (p->rayDirX == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirX);
-	p->deltaDistY = (p->rayDirY == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirY);
-	if (p->rayDirX < 0) { p->stepX = -1; p->sideDistX = (p->posX - p->mapX) * p->deltaDistX; }
-	else { p->stepX = 1; p->sideDistX = ((float)(p->mapX + 1) - p->posX) * p->deltaDistX; }
-	if (p->rayDirY < 0) { p->stepY = -1; p->sideDistY = (p->posY - p->mapY) * p->deltaDistY; }
-	else { p->stepY = 1; p->sideDistY = ((float)(p->mapY + 1) - p->posY) * p->deltaDistY; }
+	calc_ray_bis(p, x);
+	if (p->raydir_x < 0)
+	{
+		p->step_x = -1;
+		p->side_dist_x = (p->pos_x - p->map_x) * p->delta_dist_x;
+	}
+	else
+	{
+		p->step_x = 1;
+		p->side_dist_x = ((float)(p->map_x + 1) - p->pos_x) * p->delta_dist_x;
+	}
+	if (p->raydir_y < 0)
+	{
+		p->step_y = -1;
+		p->side_dist_y = (p->pos_y - p->map_y) * p->delta_dist_y;
+	}
+	else
+	{
+		p->step_y = 1;
+		p->side_dist_y = ((float)(p->map_y + 1) - p->pos_y) * p->delta_dist_y;
+	}
 }
 
 static void	calc_wall(t_player *p)
 {
 	if (p->side == 0)
-		p->perpWallDist = ((float)p->mapX - p->posX + (1 - p->stepX) * 0.5f) /
-			((p->rayDirX != 0.0f) ? p->rayDirX : 1e-6f);
+		p->perp_wall_dist = ((float)p->map_x - p->pos_x + (1 - p->step_x) * 0.5f) /
+			((p->raydir_x != 0.0f) ? p->raydir_x : 1e-6f);
 	else
-		p->perpWallDist = ((float)p->mapY - p->posY + (1 - p->stepY) * 0.5f) /
-			((p->rayDirY != 0.0f) ? p->rayDirY : 1e-6f);
-	p->lineHeight = (int)((float)HEIGHT / p->perpWallDist);
-	p->drawStart = -p->lineHeight / 2 + HEIGHT / 2;
-	if (p->drawStart < 0) p->drawStart = 0;
-	p->drawEnd = p->lineHeight / 2 + HEIGHT / 2;
-	if (p->drawEnd >= HEIGHT) p->drawEnd = HEIGHT - 1;
+		p->perp_wall_dist = ((float)p->map_y - p->pos_y + (1 - p->step_y) * 0.5f) /
+			((p->raydir_y != 0.0f) ? p->raydir_y : 1e-6f);
+	p->line_height = (int)((float)HEIGHT / p->perp_wall_dist);
+	p->draw_start = -p->line_height / 2 + HEIGHT / 2;
+	if (p->draw_start < 0) p->draw_start = 0;
+	p->draw_end = p->line_height / 2 + HEIGHT / 2;
+	if (p->draw_end >= HEIGHT) p->draw_end = HEIGHT - 1;
 }
 
 
@@ -48,15 +77,19 @@ static void	draw_column(t_player *p, t_game *game, int x)
 	int	y;
 	int	color;
 
-	for (y = 0; y < p->drawStart; y++)
-		put_pixel(x, y, game->ceiling_color, game);
+	y = 0;
+	while (y < p->draw_start)
+		put_pixel(x, y++, game->ceiling_color, game);
 
-	color = (p->side == 0) ? 0xFFFFFF : 0xAAAAAA;
-	for (y = p->drawStart; y <= p->drawEnd; y++)
-		put_pixel(x, y, color, game);
-
-	for (y = p->drawEnd + 1; y < HEIGHT; y++)
-		put_pixel(x, y, game->floor_color, game);
+	if (p->side == 0)
+		color = 0xFFFFFF;
+	else
+		color = 0xAAAAAA;
+	y = p->draw_start;
+	while (y <= p->draw_end)
+		put_pixel(x, y++, color, game);
+	while (y < HEIGHT)
+		put_pixel(x, y++, game->floor_color, game);
 }
 
 
@@ -64,113 +97,13 @@ void	raycast(t_player *p, t_game *game)
 {
 	int x;
 
-	for (x = 0; x < WIDTH; x++)
+	x = 0;
+	while (x < WIDTH)
 	{
 		calc_ray(p, x);
-		perform_dda(p, game);
+		perform_dda(p, game, 0, 0);
 		calc_wall(p);
 		draw_column(p, game, x);
+		x++;
 	}
 }
-
-
-/*void	raycast(t_player *p, t_game *game)
-{
-	int		x;
-	int		y;
-	int		color;
-	int		mapWidth;
-	int		mapHeight;
-
-	// Calcul des dimensions de la map
-	mapHeight = 0;
-	while (game->map[mapHeight])
-		mapHeight++;
-	mapWidth = 0;
-	while (game->map[0][mapWidth])
-		mapWidth++;
-
-	for (x = 0; x < WIDTH; x++)
-	{
-		p->cameraX = 2.0f * x / (float)WIDTH - 1.0f;
-		p->rayDirX = p->dirX + p->planeX * p->cameraX;
-		p->rayDirY = p->dirY + p->planeY * p->cameraX;
-
-		p->mapX = (int)p->posX;
-		p->mapY = (int)p->posY;
-
-		p->deltaDistX = (p->rayDirX == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirX);
-		p->deltaDistY = (p->rayDirY == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirY);
-
-		if (p->rayDirX < 0.0f)
-		{
-			p->stepX = -1;
-			p->sideDistX = (p->posX - (float)p->mapX) * p->deltaDistX;
-		}
-		else
-		{
-			p->stepX = 1;
-			p->sideDistX = ((float)(p->mapX + 1) - p->posX) * p->deltaDistX;
-		}
-		if (p->rayDirY < 0.0f)
-		{
-			p->stepY = -1;
-			p->sideDistY = (p->posY - (float)p->mapY) * p->deltaDistY;
-		}
-		else
-		{
-			p->stepY = 1;
-			p->sideDistY = ((float)(p->mapY + 1) - p->posY) * p->deltaDistY;
-		}
-
-		// DDA avec fail-safe
-		int hit = 0;
-		int steps = 0;
-		while (!hit && steps < 1000)
-		{
-			if (p->sideDistX < p->sideDistY)
-			{
-				p->sideDistX += p->deltaDistX;
-				p->mapX += p->stepX;
-				p->side = 0;
-			}
-			else
-			{
-				p->sideDistY += p->deltaDistY;
-				p->mapY += p->stepY;
-				p->side = 1;
-			}
-			if (p->mapY >= 0 && p->mapY < mapHeight &&
-				p->mapX >= 0 && p->mapX < mapWidth &&
-				game->map[p->mapY][p->mapX] == '1')
-				hit = 1;
-			steps++;
-		}
-
-		// Distance perpendiculaire
-		if (p->side == 0)
-			p->perpWallDist = ((float)p->mapX - p->posX + (1 - p->stepX) * 0.5f) / ((p->rayDirX != 0.0f) ? p->rayDirX : 1e-6f);
-		else
-			p->perpWallDist = ((float)p->mapY - p->posY + (1 - p->stepY) * 0.5f) / ((p->rayDirY != 0.0f) ? p->rayDirY : 1e-6f);
-
-		p->lineHeight = (int)((float)HEIGHT / p->perpWallDist);
-		p->drawStart = -p->lineHeight / 2 + HEIGHT / 2;
-		if (p->drawStart < 0) p->drawStart = 0;
-		p->drawEnd = p->lineHeight / 2 + HEIGHT / 2;
-		if (p->drawEnd >= HEIGHT) p->drawEnd = HEIGHT - 1;
-
-		// Dessin plafond
-		for (y = 0; y < p->drawStart; y++)
-			put_pixel(x, y, game->ceiling_color, game);
-
-		// Dessin mur
-		color = (p->side == 0) ? 0xFFFFFF : 0xAAAAAA;
-		for (y = p->drawStart; y <= p->drawEnd; y++)
-			put_pixel(x, y, color, game);
-
-		// Dessin sol
-		for (y = p->drawEnd + 1; y < HEIGHT; y++)
-			put_pixel(x, y, game->floor_color, game);
-	}
-}
-*/

@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/04 11:15:19 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 15:09:15 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,31 +39,31 @@
 
 typedef struct	s_player
 {
-	float	posX;
-	float	posY;
-	float	dirX;
-	float	dirY;
-	float	planeX;
-	float	planeY;
+	float	pos_x;
+	float	pos_y;
+	float	dir_x;
+	float	dir_y;
+	float	plane_x;
+	float	plane_y;
 
-	float	cameraX;
-	float	rayDirX;
-	float	rayDirY;
-	int		mapX;
-	int		mapY;
+	float	camera_x;
+	float	raydir_x;
+	float	raydir_y;
+	int		map_x;
+	int		map_y;
 
-	float	sideDistX;
-	float	sideDistY;
-	float	deltaDistX;
-	float	deltaDistY;
-	int		stepX;
-	int		stepY;
+	float	side_dist_x;
+	float	side_dist_y;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		step_x;
+	int		step_y;
 	int		side;
 
-	float	perpWallDist;
-	int		lineHeight;
-	int		drawStart;
-	int		drawEnd;
+	float	perp_wall_dist;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
 	int		x;
 
 	bool	k_up;
@@ -98,7 +98,7 @@ int		key_press(int keycode, t_player *player);
 void	move_player(t_game *game, t_player *p);
 
 void	raycast(t_player *p, t_game *game);
-void	perform_dda(t_player *p, t_game *game);
+void	perform_dda(t_player *p, t_game *game, int hit, int steps);
 void	put_pixel(int x, int y, int color, t_game *game);
 
 void		clear_all(t_game *game);
