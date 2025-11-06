@@ -12,111 +12,165 @@
 
 #include "../include/cub3d.h"
 
-static void	set_check(t_player *player, int *x, int *y)
+static void	calc_ray(t_player *p, int x)
 {
-	if (player->cos_angle > 0.0 && player->sin_angle < 0.0)
-	{
-		*x = -1;
-		*y = 1;
-	}
-	if (player->cos_angle > 0.0 && player->sin_angle > 0.0)
-	{
-		*x = -1;
-		*y = -1;
-	}
-	if (player->cos_angle < 0.0 && player->sin_angle < 0.0)
-	{
-		*x = 1;
-		*y = 1;
-	}
-	if (player->cos_angle < 0.0 && player->sin_angle > 0.0)
-	{
-		*x = 1;
-		*y = -1;
-	}
+	p->cameraX = 2.0f * x / (float)WIDTH - 1.0f;
+	p->rayDirX = p->dirX + p->planeX * p->cameraX;
+	p->rayDirY = p->dirY + p->planeY * p->cameraX;
+	p->mapX = (int)p->posX;
+	p->mapY = (int)p->posY;
+	p->deltaDistX = (p->rayDirX == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirX);
+	p->deltaDistY = (p->rayDirY == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirY);
+	if (p->rayDirX < 0) { p->stepX = -1; p->sideDistX = (p->posX - p->mapX) * p->deltaDistX; }
+	else { p->stepX = 1; p->sideDistX = ((float)(p->mapX + 1) - p->posX) * p->deltaDistX; }
+	if (p->rayDirY < 0) { p->stepY = -1; p->sideDistY = (p->posY - p->mapY) * p->deltaDistY; }
+	else { p->stepY = 1; p->sideDistY = ((float)(p->mapY + 1) - p->posY) * p->deltaDistY; }
 }
 
-static bool	touch(t_game *game)
+static void	calc_wall(t_player *p)
 {
-	int	x;
+	if (p->side == 0)
+		p->perpWallDist = ((float)p->mapX - p->posX + (1 - p->stepX) * 0.5f) /
+			((p->rayDirX != 0.0f) ? p->rayDirX : 1e-6f);
+	else
+		p->perpWallDist = ((float)p->mapY - p->posY + (1 - p->stepY) * 0.5f) /
+			((p->rayDirY != 0.0f) ? p->rayDirY : 1e-6f);
+	p->lineHeight = (int)((float)HEIGHT / p->perpWallDist);
+	p->drawStart = -p->lineHeight / 2 + HEIGHT / 2;
+	if (p->drawStart < 0) p->drawStart = 0;
+	p->drawEnd = p->lineHeight / 2 + HEIGHT / 2;
+	if (p->drawEnd >= HEIGHT) p->drawEnd = HEIGHT - 1;
+}
+
+
+static void	draw_column(t_player *p, t_game *game, int x)
+{
 	int	y;
-	int	check_x;
-	int	check_y;
+	int	color;
 
-	x = game->player.ray_x / BLOCK;
-	y = game->player.ray_y / BLOCK;
-	if (game->map[y][x] == '1')
-		return (true);
-	return (false);
-	/* BUG */
-	if (game->player.cos_angle == 0 || game->player.sin_angle == 0)
-		return (false);
-	set_check(&(game->player), &check_x, &check_y);
-	if (game->map[y + check_y][x] == '1'
-		&& game->map[y][x + check_x] == '1')
-        	return (true);
-	return (false);
+	for (y = 0; y < p->drawStart; y++)
+		put_pixel(x, y, game->ceiling_color, game);
+
+	color = (p->side == 0) ? 0xFFFFFF : 0xAAAAAA;
+	for (y = p->drawStart; y <= p->drawEnd; y++)
+		put_pixel(x, y, color, game);
+
+	for (y = p->drawEnd + 1; y < HEIGHT; y++)
+		put_pixel(x, y, game->floor_color, game);
 }
 
-static float	distance(float x, float y)
+
+void	raycast(t_player *p, t_game *game)
 {
-	float	res;
+	int x;
 
-	res = sqrt(x * x + y * y);
-	return (res);
+	for (x = 0; x < WIDTH; x++)
+	{
+		calc_ray(p, x);
+		perform_dda(p, game);
+		calc_wall(p);
+		draw_column(p, game, x);
+	}
 }
 
-static float	fixed_dist(float x1, float y1, float x2, float y2, t_game *game)
+
+/*void	raycast(t_player *p, t_game *game)
 {
-	float	delta_x;
-	float	delta_y;
-	float	angle;
-	float	dist;
+	int		x;
+	int		y;
+	int		color;
+	int		mapWidth;
+	int		mapHeight;
 
-	delta_x = x2 - x1;
-	delta_y = y2 - y1;
-	angle = atan2(delta_y, delta_x) - game->player.angle;
-	dist = distance(delta_x, delta_y) * cos(angle);
-	return (dist);
+	// Calcul des dimensions de la map
+	mapHeight = 0;
+	while (game->map[mapHeight])
+		mapHeight++;
+	mapWidth = 0;
+	while (game->map[0][mapWidth])
+		mapWidth++;
+
+	for (x = 0; x < WIDTH; x++)
+	{
+		p->cameraX = 2.0f * x / (float)WIDTH - 1.0f;
+		p->rayDirX = p->dirX + p->planeX * p->cameraX;
+		p->rayDirY = p->dirY + p->planeY * p->cameraX;
+
+		p->mapX = (int)p->posX;
+		p->mapY = (int)p->posY;
+
+		p->deltaDistX = (p->rayDirX == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirX);
+		p->deltaDistY = (p->rayDirY == 0.0f) ? 1e6f : fabsf(1.0f / p->rayDirY);
+
+		if (p->rayDirX < 0.0f)
+		{
+			p->stepX = -1;
+			p->sideDistX = (p->posX - (float)p->mapX) * p->deltaDistX;
+		}
+		else
+		{
+			p->stepX = 1;
+			p->sideDistX = ((float)(p->mapX + 1) - p->posX) * p->deltaDistX;
+		}
+		if (p->rayDirY < 0.0f)
+		{
+			p->stepY = -1;
+			p->sideDistY = (p->posY - (float)p->mapY) * p->deltaDistY;
+		}
+		else
+		{
+			p->stepY = 1;
+			p->sideDistY = ((float)(p->mapY + 1) - p->posY) * p->deltaDistY;
+		}
+
+		// DDA avec fail-safe
+		int hit = 0;
+		int steps = 0;
+		while (!hit && steps < 1000)
+		{
+			if (p->sideDistX < p->sideDistY)
+			{
+				p->sideDistX += p->deltaDistX;
+				p->mapX += p->stepX;
+				p->side = 0;
+			}
+			else
+			{
+				p->sideDistY += p->deltaDistY;
+				p->mapY += p->stepY;
+				p->side = 1;
+			}
+			if (p->mapY >= 0 && p->mapY < mapHeight &&
+				p->mapX >= 0 && p->mapX < mapWidth &&
+				game->map[p->mapY][p->mapX] == '1')
+				hit = 1;
+			steps++;
+		}
+
+		// Distance perpendiculaire
+		if (p->side == 0)
+			p->perpWallDist = ((float)p->mapX - p->posX + (1 - p->stepX) * 0.5f) / ((p->rayDirX != 0.0f) ? p->rayDirX : 1e-6f);
+		else
+			p->perpWallDist = ((float)p->mapY - p->posY + (1 - p->stepY) * 0.5f) / ((p->rayDirY != 0.0f) ? p->rayDirY : 1e-6f);
+
+		p->lineHeight = (int)((float)HEIGHT / p->perpWallDist);
+		p->drawStart = -p->lineHeight / 2 + HEIGHT / 2;
+		if (p->drawStart < 0) p->drawStart = 0;
+		p->drawEnd = p->lineHeight / 2 + HEIGHT / 2;
+		if (p->drawEnd >= HEIGHT) p->drawEnd = HEIGHT - 1;
+
+		// Dessin plafond
+		for (y = 0; y < p->drawStart; y++)
+			put_pixel(x, y, game->ceiling_color, game);
+
+		// Dessin mur
+		color = (p->side == 0) ? 0xFFFFFF : 0xAAAAAA;
+		for (y = p->drawStart; y <= p->drawEnd; y++)
+			put_pixel(x, y, color, game);
+
+		// Dessin sol
+		for (y = p->drawEnd + 1; y < HEIGHT; y++)
+			put_pixel(x, y, game->floor_color, game);
+	}
 }
-
-void	draw_line(t_player *player, t_game *game, int i)
-{
-	int	tmp;
-
-	player->cos_angle = cos(player->start_x);
-	player->sin_angle = sin(player->start_x);
-	player->ray_x = player->x;
-	player->ray_y = player->y;
-	while (!touch(game))
-	{
-		if (DEBUG == 1)
-			put_pixel(player->ray_x, player->ray_y, 0xFF0000, game);
-		player->ray_x += player->cos_angle;
-		player->ray_y += player->sin_angle;
-	}
-	player->dist = fixed_dist(player->x, player->y, player->ray_x, player->ray_y, game);
-	player->height = (BLOCK / player->dist) * (WIDTH / 2);
-	player->start_y = (HEIGHT - player->height) / 2;
-	player->end = player->start_y + player->height;
-	tmp = player->end;
-	while (tmp < HEIGHT)
-	{
-		if (DEBUG == 0)
-			put_pixel(i, tmp, game->floor_color, game);
-		tmp++;
-	}
-	tmp = player->start_y;
-	while (tmp > 0)
-	{
-		if (DEBUG == 0)
-			put_pixel(i, tmp, game->ceiling_color, game);
-		tmp--;
-	}
-	while (player->start_y < player->end)
-	{
-		if (DEBUG == 0)
-			put_pixel(i, player->start_y, 225, game);
-		player->start_y++;
-	}
-}
+*/

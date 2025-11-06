@@ -22,4 +22,6 @@ void	put_pixel(int x, int y, int color, t_game *game)
 	game->data[index] = color & 0xFF;
 	game->data[index + 1] = (color >> 8) & 0xFF;
 	game->data[index + 2] = (color >> 16) & 0xFF;
+	if (game->bpp / 8 == 4)
+		game->data[index + 3] = 0;
 }

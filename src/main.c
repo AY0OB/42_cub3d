@@ -20,23 +20,8 @@ void	draw_square(int x, int y, int size, int color, t_game *game)
 	while (i < size)
 	{
 		put_pixel(x + i, y, color, game);
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
 		put_pixel(x, y + i, color, game);
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
 		put_pixel(x + i, y + size, color, game);
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
 		put_pixel(x + size, y + i, color, game);
 		i++;
 	}
@@ -80,8 +65,8 @@ void	init_game(t_game *game)
 	game->img = mlx_new_image(game->mlx, WIDTH, HEIGHT);
 	game->data = mlx_get_data_addr(game->img, &game->bpp,
 			&game->line_lgth, &game->endian);
-	game->floor_color = 0x7c0000;
-	game->ceiling_color = 0xFF4500;
+	game->floor_color = 0xA52A2A;
+	game->ceiling_color = 0x87ceeb;
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 }
 
@@ -131,39 +116,16 @@ void	draw_map(t_game *game)
 int	draw_loop(t_game *game)
 {
 	t_player	*player;
-	int		i;
 
 	player = &game->player;
-	printf("cos %f, sin %f\n", player->cos_angle, player->sin_angle);
 	move_player(game, player);
 	clear_img(game);
 	if (DEBUG == 1)
 	{
-		draw_square(player->x - 3, player->y - 3, 6, 0x00FF00, game);
+		draw_square(player->posX - 3, player->posY - 3, 6, 0x00FF00, game);
 		draw_map(game);
 	}
-
-	/*player->ray_x = player->x;
-	player->ray_y = player->y;
-	player->cos_angle = cos(player->angle);
-	player->sin_angle = sin(player->angle);
-
-	while (!touch(game))
-	{
-		put_pixel(player->ray_x, player->ray_y, 0xFF0000, game);
-		player->ray_x += player->cos_angle;
-		player->ray_y += player->sin_angle;
-	}*/
-
-	player->fraction = PI / 3 / WIDTH;
-	player->start_x = player->angle - PI / 6;
-	i = 0;
-	while (i < WIDTH)
-	{
-		draw_line(player, game, i);
-		player->start_x += player->fraction;
-		i++;
-	}
+	raycast(player, game);
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 	return (0);
 }

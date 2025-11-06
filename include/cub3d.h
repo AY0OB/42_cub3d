@@ -18,7 +18,7 @@
 # include <stdbool.h>
 # include <math.h>
 
-# define DEBUG 1
+# define DEBUG 0
 
 # define WIDTH 1280
 # define HEIGHT 720
@@ -35,28 +35,36 @@
 
 
 # define PI 3.14159265359
+# define FOV PI / 3
 
 typedef struct	s_player
 {
-	float	x;
-	float	y;
-	float	angle;
+	float	posX;
+	float	posY;
+	float	dirX;
+	float	dirY;
+	float	planeX;
+	float	planeY;
 
-	float	pos_x;
-	float	pos_y;
+	float	cameraX;
+	float	rayDirX;
+	float	rayDirY;
+	int		mapX;
+	int		mapY;
 
-	float	ray_x;
-	float	ray_y;
-	float	cos_angle;
-	float	sin_angle;
+	float	sideDistX;
+	float	sideDistY;
+	float	deltaDistX;
+	float	deltaDistY;
+	int		stepX;
+	int		stepY;
+	int		side;
 
-	float	fraction;
-	float	start_x;
-	int		start_y;
-
-	float	dist;
-	float	height;
-	int	end;
+	float	perpWallDist;
+	int		lineHeight;
+	int		drawStart;
+	int		drawEnd;
+	int		x;
 
 	bool	k_up;
 	bool	k_down;
@@ -87,15 +95,11 @@ typedef struct	s_game
 void	init_player(t_player *player);
 int		key_release(int keycode, t_player *player);
 int		key_press(int keycode, t_player *player);
-void	move_player(t_game *game, t_player *player);
+void	move_player(t_game *game, t_player *p);
 
-void	draw_line(t_player *player, t_game *game, int i);
+void	raycast(t_player *p, t_game *game);
+void	perform_dda(t_player *p, t_game *game);
 void	put_pixel(int x, int y, int color, t_game *game);
-
-bool	check_x_add(t_game *game, t_player *player, float cos_sin);
-bool	check_y_add(t_game *game, t_player *player, float cos_sin);
-bool	check_x_demote(t_game *game, t_player *player, float cos_sin);
-bool	check_y_demote(t_game *game, t_player *player, float cos_sin);
 
 void		clear_all(t_game *game);
 

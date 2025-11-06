@@ -30,9 +30,9 @@ MLXFLAGS = -lmlx -lX11 -lXext
 SRC =	$(FIC)main.c\
 	$(FIC)player.c\
 	$(FIC)draw.c\
+	$(FIC)dda.c\
 	$(FIC)put_pixel.c\
 	$(FIC)clear_all.c\
-	$(FIC)check_co.c\
 
 OBJ = $(SRC:.c=.o)
 

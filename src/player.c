@@ -14,14 +14,24 @@
 
 void	init_player(t_player *player)
 {
-	player->x = WIDTH / 2;
-	player->y = HEIGHT / 2;
-	player->angle = (3 * PI) / 2; //UP
-	//player->angle = 0; //RIGHT 
-	//player->angle = PI / 2; //DOWN
-	//player->angle = PI; //LEFT
-	player->pos_x = player->x / BLOCK;
-	player->pos_y = player->y / BLOCK;
+	player->posX = 5.0;
+	player->posY = 5.0;
+	player->dirX = 0;	//UP
+	player->dirY = -1;
+	player->planeX = 0.66;
+	player->planeY = 0.0;
+	player->x = 0;
+	player->cameraX = 2 * player->x / WIDTH - 1;
+	player->rayDirX = player->dirX + player->planeX * player->cameraX;
+	player->rayDirY = player->dirY + player->planeY * player->cameraX;
+	player->mapX = (int)player->posX;
+	player->mapY = (int)player->posY;
+	//player->dirX = 0;	//UP
+	//player->dirY = -1;
+	//player->dirX = 0;	//UP
+	//player->dirY = -1;
+	//player->dirX = 0;	//UP
+	//player->dirY = -1;
 	player->k_up = false;
 	player->k_down = false;
 	player->k_left = false;
@@ -64,56 +74,130 @@ int	key_release(int keycode, t_player *player)
 	return (0);
 }
 
-static void	move_player_bis(t_game *game, t_player *player, int speed)
+static void	rotate_player(t_player *p, float rotSpeed)
 {
-	if (player->k_down)
+	float	oldDirX = p->dirX;
+	float	oldPlaneX = p->planeX;
+
+	if (p->l_rotate)
 	{
-		if (check_x_demote(game, player, player->cos_angle))
-			player->x -= player->cos_angle * speed;
-		if (check_y_demote(game, player, player->sin_angle))
-			player->y -= player->sin_angle * speed;
+		p->dirX = p->dirX * cosf(-rotSpeed) - p->dirY * sinf(-rotSpeed);
+		p->dirY = oldDirX * sinf(-rotSpeed) + p->dirY * cosf(-rotSpeed);
+		p->planeX = p->planeX * cosf(-rotSpeed) - p->planeY * sinf(-rotSpeed);
+		p->planeY = oldPlaneX * sinf(-rotSpeed) + p->planeY * cosf(-rotSpeed);
 	}
-	if (player->k_left)
+	if (p->r_rotate)
 	{
-		if (check_x_add(game, player, player->sin_angle))
-			player->x += player->sin_angle * speed;
-		if (check_y_demote(game, player, player->cos_angle))
-			player->y -= player->cos_angle * speed;
-	}
-	if (player->k_right)
-	{
-		if (check_x_demote(game, player, player->sin_angle))
-			player->x -= player->sin_angle * speed;
-		if (check_y_add(game, player, player->cos_angle))
-			player->y += player->cos_angle * speed;
+		p->dirX = p->dirX * cosf(rotSpeed) - p->dirY * sinf(rotSpeed);
+		p->dirY = oldDirX * sinf(rotSpeed) + p->dirY * cosf(rotSpeed);
+		p->planeX = p->planeX * cosf(rotSpeed) - p->planeY * sinf(rotSpeed);
+		p->planeY = oldPlaneX * sinf(rotSpeed) + p->planeY * cosf(rotSpeed);
 	}
 }
 
-void	move_player(t_game *game, t_player *player)
+static void	move_axis(t_player *p, t_game *game, float moveX, float moveY)
 {
-	int		speed;
-	float	angle_speed;
+	int	newMapX = (int)(p->posX + moveX);
+	int	newMapY = (int)(p->posY + moveY);
+	int	mapWidth = 0;
+	int	mapHeight = 0;
 
-	speed = 3;
-	angle_speed = 0.03;
-	player->cos_angle = cos(player->angle);
-	player->sin_angle = sin(player->angle);
-	player->pos_x = player->x / BLOCK;
-	player->pos_y = player->y / BLOCK;
-	if (player->l_rotate)
-		player->angle -= angle_speed;
-	if (player->r_rotate)
-		player->angle += angle_speed;
-	if (player->angle > 2 * PI)
-		player->angle = 0;
-	if (player->angle < 0)
-		player->angle = 2 * PI;
-	if (player->k_up)
-	{
-		if (check_x_add(game, player, player->cos_angle))
-			player->x += player->cos_angle * speed;
-		if (check_y_add(game, player, player->sin_angle))
-			player->y += player->sin_angle * speed;
-	}
-	move_player_bis(game, player, speed);
+	while (game->map[mapHeight]) mapHeight++;
+	while (game->map[0][mapWidth]) mapWidth++;
+
+	if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
+		p->posX += moveX;
+	if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
+		p->posY += moveY;
 }
+
+void	move_player(t_game *game, t_player *p)
+{
+	float	moveSpeed = 0.1f;
+	float	rotSpeed = 0.05f;
+
+	rotate_player(p, rotSpeed);
+
+	if (p->k_up)	move_axis(p, game, p->dirX * moveSpeed, p->dirY * moveSpeed);
+	if (p->k_down)	move_axis(p, game, -p->dirX * moveSpeed, -p->dirY * moveSpeed);
+	if (p->k_left)	move_axis(p, game, -p->planeX * moveSpeed, -p->planeY * moveSpeed);
+	if (p->k_right)	move_axis(p, game, p->planeX * moveSpeed, p->planeY * moveSpeed);
+}
+
+/*void	move_player(t_game *game, t_player *p)
+{
+	float	moveSpeed = 0.1f;  // vitesse de déplacement
+	float	rotSpeed = 0.05f;  // vitesse de rotation
+	int		mapWidth;
+	int		mapHeight;
+	int		newMapX;
+	int		newMapY;
+
+	// Taille réelle de la map
+	mapHeight = 0;
+	while (game->map[mapHeight])
+		mapHeight++;
+	mapWidth = 0;
+	while (game->map[0][mapWidth])
+		mapWidth++;
+
+	// 🔄 Rotation
+	if (p->l_rotate)
+	{
+		float	oldDirX = p->dirX;
+		p->dirX = p->dirX * cosf(-rotSpeed) - p->dirY * sinf(-rotSpeed);
+		p->dirY = oldDirX * sinf(-rotSpeed) + p->dirY * cosf(-rotSpeed);
+		float	oldPlaneX = p->planeX;
+		p->planeX = p->planeX * cosf(-rotSpeed) - p->planeY * sinf(-rotSpeed);
+		p->planeY = oldPlaneX * sinf(-rotSpeed) + p->planeY * cosf(-rotSpeed);
+	}
+	if (p->r_rotate)
+	{
+		float	oldDirX = p->dirX;
+		p->dirX = p->dirX * cosf(rotSpeed) - p->dirY * sinf(rotSpeed);
+		p->dirY = oldDirX * sinf(rotSpeed) + p->dirY * cosf(rotSpeed);
+		float	oldPlaneX = p->planeX;
+		p->planeX = p->planeX * cosf(rotSpeed) - p->planeY * sinf(rotSpeed);
+		p->planeY = oldPlaneX * sinf(rotSpeed) + p->planeY * cosf(rotSpeed);
+	}
+
+	// 🔄 Déplacement avant/arrière
+	if (p->k_up)
+	{
+		newMapX = (int)(p->posX + p->dirX * moveSpeed);
+		newMapY = (int)(p->posY + p->dirY * moveSpeed);
+		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
+			p->posX += p->dirX * moveSpeed;
+		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
+			p->posY += p->dirY * moveSpeed;
+	}
+	if (p->k_down)
+	{
+		newMapX = (int)(p->posX - p->dirX * moveSpeed);
+		newMapY = (int)(p->posY - p->dirY * moveSpeed);
+		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
+			p->posX -= p->dirX * moveSpeed;
+		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
+			p->posY -= p->dirY * moveSpeed;
+	}
+
+	// 🔄 Déplacement latéral (strafe)
+	if (p->k_left)
+	{
+		newMapX = (int)(p->posX - p->planeX * moveSpeed);
+		newMapY = (int)(p->posY - p->planeY * moveSpeed);
+		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
+			p->posX -= p->planeX * moveSpeed;
+		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
+			p->posY -= p->planeY * moveSpeed;
+	}
+	if (p->k_right)
+	{
+		newMapX = (int)(p->posX + p->planeX * moveSpeed);
+		newMapY = (int)(p->posY + p->planeY * moveSpeed);
+		if (newMapX >= 0 && newMapX < mapWidth && game->map[(int)p->posY][newMapX] == '0')
+			p->posX += p->planeX * moveSpeed;
+		if (newMapY >= 0 && newMapY < mapHeight && game->map[newMapY][(int)p->posX] == '0')
+			p->posY += p->planeY * moveSpeed;
+	}
+}*/
