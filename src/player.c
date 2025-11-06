@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 20:13:55 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 15:19:09 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 17:59:06 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,26 @@ void	init_player(t_player *player)
 	player->r_rotate = false;
 }
 
-int	key_press(int keycode, t_player *player)
+int	key_press(int keycode, t_game *g)
 {
+	if (keycode == ESC)
+	{
+		ft_printf("window closing\n");
+		clear_all(g);
+		exit(0);
+	}
 	if (keycode == W)
-		player->k_up = true;
+		g->player.k_up = true;
 	if (keycode == S)
-		player->k_down = true;
+		g->player.k_down = true;
 	if (keycode == A)
-		player->k_left = true;
+		g->player.k_left = true;
 	if (keycode == D)
-		player->k_right = true;
+		g->player.k_right = true;
 	if (keycode == LEFT)
-		player->l_rotate = true;
+		g->player.l_rotate = true;
 	if (keycode == RIGHT)
-		player->r_rotate = true;
+		g->player.r_rotate = true;
 	return (0);
 }
 

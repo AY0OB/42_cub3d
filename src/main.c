@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:28:56 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 15:16:35 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 17:56:27 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	**get_map(void)
 {
 	char	**map;
 
-	map = ft_calloc(sizeof(char *), 21);
+	map = ft_calloc(sizeof(char *), 38);
 	map[0] = "111111111111111";
 	map[1] = "100000000000001";
 	map[2] = "100010000100001";
@@ -51,8 +51,25 @@ char	**get_map(void)
 	map[16] = "100000000000001";
 	map[17] = "100000000000001";
 	map[18] = "100000000000001";
-	map[19] = "111111111111111";
-	map[20] = NULL;
+	map[19] = "100000000000001";
+	map[20] = "100000000000001";
+	map[21] = "100000000000001";
+	map[22] = "100000000000001";
+	map[23] = "100000000000001";
+	map[24] = "100000000000001";
+	map[25] = "100000000000001";
+	map[26] = "100000000000001";
+	map[27] = "100000000000001";
+	map[28] = "100000000000001";
+	map[29] = "100000000000001";
+	map[30] = "100000000000001";
+	map[31] = "100000000000001";
+	map[32] = "100000000000001";
+	map[33] = "100000000000001";
+	map[34] = "100000000000001";
+	map[35] = "100000000000001";
+	map[36] = "111111111111111";
+	map[37] = NULL;
 	return (map);
 }
 
@@ -142,7 +159,7 @@ int	main(void)
 
 	init_game(&game);
 	mlx_hook(game.window, 17, 0, close_window, &game);
-	mlx_hook(game.window, 2, 1L << 0, key_press, &game.player);
+	mlx_hook(game.window, 2, 1L << 0, key_press, &game);
 	mlx_hook(game.window, 3, 1L << 1, key_release, &game.player);
 	mlx_loop_hook(game.mlx, draw_loop, &game);
 	mlx_loop(game.mlx);

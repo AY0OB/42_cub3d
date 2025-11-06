@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 15:09:15 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 17:59:02 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # define HEIGHT 720
 # define BLOCK 64
 
+
+# define ESC 65307
 # define W 119
 # define A 97
 # define S 115
@@ -94,7 +96,7 @@ typedef struct	s_game
 
 void	init_player(t_player *player);
 int		key_release(int keycode, t_player *player);
-int		key_press(int keycode, t_player *player);
+int		key_press(int keycode, t_game *g);
 void	move_player(t_game *game, t_player *p);
 
 void	raycast(t_player *p, t_game *game);
