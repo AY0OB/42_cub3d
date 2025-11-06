@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 15:27:05 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 17:48:22 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 18:26:38 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,10 @@ static void	calc_ray_bis(t_player *p, int x)
 		p->delta_dist_x = 1e6f;
 	else
 		p->delta_dist_x = fabsf(1.0f / p->raydir_x);
-	//p->delta_dist_x = (p->raydir_x == 0.0f) ? 1e6f : fabsf(1.0f / p->raydir_x);
 	if (p->raydir_y == 0.0f)
 		p->delta_dist_y = 1e6f;
 	else
 		p->delta_dist_y = fabsf(1.0f / p->raydir_y);
-	//p->delta_dist_y = (p->raydir_y == 0.0f) ? 1e6f : fabsf(1.0f / p->raydir_y);
 }
 
 static void	calc_ray(t_player *p, int x)
@@ -58,19 +56,24 @@ static void	calc_ray(t_player *p, int x)
 
 static void	calc_wall(t_player *p)
 {
+
+
 	if (p->side == 0)
 		p->perp_wall_dist = ((float)p->map_x - p->pos_x + (1 - p->step_x) * 0.5f) /
 			((p->raydir_x != 0.0f) ? p->raydir_x : 1e-6f);
 	else
 		p->perp_wall_dist = ((float)p->map_y - p->pos_y + (1 - p->step_y) * 0.5f) /
 			((p->raydir_y != 0.0f) ? p->raydir_y : 1e-6f);
+
+
 	p->line_height = (int)((float)HEIGHT / p->perp_wall_dist);
 	p->draw_start = -p->line_height / 2 + HEIGHT / 2;
-	if (p->draw_start < 0) p->draw_start = 0;
+	if (p->draw_start < 0)
+		p->draw_start = 0;
 	p->draw_end = p->line_height / 2 + HEIGHT / 2;
-	if (p->draw_end >= HEIGHT) p->draw_end = HEIGHT - 1;
+	if (p->draw_end >= HEIGHT)
+		p->draw_end = HEIGHT - 1;
 }
-
 
 static void	draw_column(t_player *p, t_game *game, int x)
 {
@@ -80,7 +83,6 @@ static void	draw_column(t_player *p, t_game *game, int x)
 	y = 0;
 	while (y < p->draw_start)
 		put_pixel(x, y++, game->ceiling_color, game);
-
 	if (p->side == 0)
 		color = 0xFFFFFF;
 	else
@@ -92,10 +94,9 @@ static void	draw_column(t_player *p, t_game *game, int x)
 		put_pixel(x, y++, game->floor_color, game);
 }
 
-
 void	raycast(t_player *p, t_game *game)
 {
-	int x;
+	int	x;
 
 	x = 0;
 	while (x < WIDTH)

@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 17:59:02 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/06 18:37:22 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,9 @@ typedef struct	s_game
 	int		ceiling_color;
 }		t_game;
 
+void	init_game(t_game *game);
 void	init_player(t_player *player);
+
 int		key_release(int keycode, t_player *player);
 int		key_press(int keycode, t_game *g);
 void	move_player(t_game *game, t_player *p);
