@@ -77,6 +77,17 @@ typedef struct	s_player
 	bool	r_rotate;
 }		t_player;
 
+typedef struct	s_texture
+{
+	void	*img;
+	char	*data;
+	int		width;
+	int		height;
+	int		bpp;
+	int		line_lgth;
+	int		endian;
+}		t_texture;
+
 typedef struct	s_game
 {
 	void	*mlx;
@@ -92,6 +103,8 @@ typedef struct	s_game
 	char	**map;
 	int		floor_color;
 	int		ceiling_color;
+
+	t_texture	textures[4];
 }		t_game;
 
 void	init_game(t_game *game);

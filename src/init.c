@@ -86,16 +86,46 @@ static char	**get_map(void)
 	return (map);
 }
 
+static void	load_texture(t_game *game, t_texture *tex, char *path)
+{
+	tex->img = mlx_xpm_file_to_image(game->mlx, path, &tex->width, &tex->height);
+	if (!tex->img)
+	{
+		ft_printf("Erreur : impossible de charger la texture %s\n", path);
+		clear_all(game);
+	}
+	tex->data = mlx_get_data_addr(tex->img, &tex->bpp, &tex->line_lgth, &tex->endian);
+}
+
+static void	load_textures(t_game *game)
+{
+	load_texture(game, &game->textures[0], "./textures/wall_north.xpm");
+	load_texture(game, &game->textures[1], "./textures/wall_south.xpm");
+	load_texture(game, &game->textures[2], "./textures/wall_east.xpm");
+	load_texture(game, &game->textures[3], "./textures/wall_west.xpm");
+}
+
 void	init_game(t_game *game)
 {
+	int	i;
+
 	init_player(&game->player);
+	i = 0;
+	while (i < 4)
+	{
+		game->textures[i].width = 0;
+		game->textures[i].height = 0;
+		game->textures[i].data = NULL;
+		i++;
+	}
+	game->floor_color = 0xA52A2A;
+	game->ceiling_color = 0x87ceeb;
 	game->mlx = mlx_init();
+	load_textures(game);
 	game->map = get_map();
 	game->window = mlx_new_window(game->mlx, WIDTH, HEIGHT, "Recasting test");
 	game->img = mlx_new_image(game->mlx, WIDTH, HEIGHT);
 	game->data = mlx_get_data_addr(game->img, &game->bpp,
 			&game->line_lgth, &game->endian);
-	game->floor_color = 0xA52A2A;
-	game->ceiling_color = 0x87ceeb;
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 }

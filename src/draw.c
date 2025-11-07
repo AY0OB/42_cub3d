@@ -75,24 +75,74 @@ static void	calc_wall(t_player *p)
 		p->draw_end = HEIGHT - 1;
 }
 
-static void	draw_column(t_player *p, t_game *game, int x)
+static void draw_textured_column(t_player *p, t_game *game, int x)
 {
-	int	y;
-	int	color;
+    int             y;
+    t_texture       *tex;
+    int             tex_x;
+    int             tex_y;
+    float           wall_x;
+    float           step;
+    float           tex_pos;
+    unsigned int    color;
 
-	y = 0;
-	while (y < p->draw_start)
-		put_pixel(x, y++, game->ceiling_color, game);
-	if (p->side == 0)
-		color = 0xFFFFFF;
-	else
-		color = 0xAAAAAA;
-	y = p->draw_start;
-	while (y <= p->draw_end)
-		put_pixel(x, y++, color, game);
-	while (y < HEIGHT)
-		put_pixel(x, y++, game->floor_color, game);
+    /* Choix de la texture selon la face du mur */
+    if (p->side == 0)
+    {
+        if (p->raydir_x > 0)
+            tex = &game->textures[0]; // mur Est
+        else
+            tex = &game->textures[1]; // mur Ouest
+    }
+    else
+    {
+        if (p->raydir_y > 0)
+            tex = &game->textures[2]; // mur Sud
+        else
+            tex = &game->textures[3]; // mur Nord
+    }
+
+    /* Calcul de l'endroit exact du mur frappé */
+    if (p->side == 0)
+        wall_x = p->pos_y + p->perp_wall_dist * p->raydir_y;
+    else
+        wall_x = p->pos_x + p->perp_wall_dist * p->raydir_x;
+    wall_x -= floorf(wall_x);
+
+    /* Position dans la texture */
+    tex_x = (int)(wall_x * (float)tex->width);
+    if ((p->side == 0 && p->raydir_x < 0) || (p->side == 1 && p->raydir_y > 0))
+        tex_x = tex->width - tex_x - 1;
+
+    /* Calcul du pas de balayage dans la texture */
+    step = (float)tex->height / p->line_height;
+    tex_pos = (float)(p->draw_start - HEIGHT / 2 + p->line_height / 2) * step;
+
+    y = 0;
+    while (y < HEIGHT)
+    {
+        if (y < p->draw_start)
+        {
+            /* ciel */
+            put_pixel(x, y, game->ceiling_color, game);
+        }
+        else if (y <= p->draw_end)
+        {
+            /* mur texturé */
+            tex_y = (int)tex_pos & (tex->height - 1);
+            color = tex->data[tex_y * tex->width + tex_x];
+            put_pixel(x, y, color, game);
+            tex_pos += step;
+        }
+        else
+        {
+            /* sol */
+            put_pixel(x, y, game->floor_color, game);
+        }
+        y++;
+    }
 }
+
 
 void	raycast(t_player *p, t_game *game)
 {
@@ -104,7 +154,7 @@ void	raycast(t_player *p, t_game *game)
 		calc_ray(p, x);
 		perform_dda(p, game, 0, 0);
 		calc_wall(p);
-		draw_column(p, game, x);
+		draw_textured_column(p, game, x);
 		x++;
 	}
 }

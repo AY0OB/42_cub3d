@@ -97,6 +97,7 @@ int	main(void)
 {
 	t_game	game;
 
+	ft_memset(&game, 0, sizeof(game));
 	init_game(&game);
 	mlx_hook(game.window, 17, 0, close_window, &game);
 	mlx_hook(game.window, 2, 1L << 0, key_press, &game);
