@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 18:37:22 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/08 17:00:42 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,17 @@ typedef struct	s_game
 
 	t_texture	textures[4];
 }		t_game;
+
+typedef struct	s_draw
+{
+	int				tex_x;
+	int				tex_y;
+	float			wall_x;
+	float			step;
+	float			tex_pos;
+	unsigned int	color;
+	int				bytes_per_pixel;
+}		t_draw;
 
 void	init_game(t_game *game);
 void	init_player(t_player *player);

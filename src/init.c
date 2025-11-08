@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:35:45 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 18:39:41 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/08 16:04:45 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,15 @@ static char	**get_map(void)
 
 static void	load_texture(t_game *game, t_texture *tex, char *path)
 {
-	tex->img = mlx_xpm_file_to_image(game->mlx, path, &tex->width, &tex->height);
+	tex->img = mlx_xpm_file_to_image(
+			game->mlx, path, &tex->width, &tex->height);
 	if (!tex->img)
 	{
 		ft_printf("Erreur : impossible de charger la texture %s\n", path);
 		clear_all(game);
 	}
-	tex->data = mlx_get_data_addr(tex->img, &tex->bpp, &tex->line_lgth, &tex->endian);
+	tex->data = mlx_get_data_addr(
+			tex->img, &tex->bpp, &tex->line_lgth, &tex->endian);
 }
 
 static void	load_textures(t_game *game)

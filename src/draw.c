@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 15:27:05 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 18:26:38 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/08 17:18:36 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,24 @@ static void	calc_ray(t_player *p, int x)
 
 static void	calc_wall(t_player *p)
 {
-
-
 	if (p->side == 0)
-		p->perp_wall_dist = ((float)p->map_x - p->pos_x + (1 - p->step_x) * 0.5f) /
-			((p->raydir_x != 0.0f) ? p->raydir_x : 1e-6f);
+	{
+		if (p->raydir_x != 0.0f)
+			p->perp_wall_dist = ((float)p->map_x - p->pos_x
+					+ (1 - p->step_x) * 0.5f) / p->raydir_x;
+		else
+			p->perp_wall_dist = ((float)p->map_x - p->pos_x
+					+ (1 - p->step_x) * 0.5f) / 1e-6f;
+	}
 	else
-		p->perp_wall_dist = ((float)p->map_y - p->pos_y + (1 - p->step_y) * 0.5f) /
-			((p->raydir_y != 0.0f) ? p->raydir_y : 1e-6f);
-
-
+	{
+		if (p->raydir_y != 0.0f)
+			p->perp_wall_dist = ((float)p->map_y - p->pos_y
+					+ (1 - p->step_y) * 0.5f) / p->raydir_y;
+		else
+			p->perp_wall_dist = ((float)p->map_y - p->pos_y
+					+ (1 - p->step_y) * 0.5f) / 1e-6f;
+	}
 	p->line_height = (int)((float)HEIGHT / p->perp_wall_dist);
 	p->draw_start = -p->line_height / 2 + HEIGHT / 2;
 	if (p->draw_start < 0)
@@ -75,74 +83,85 @@ static void	calc_wall(t_player *p)
 		p->draw_end = HEIGHT - 1;
 }
 
-static void draw_textured_column(t_player *p, t_game *game, int x)
+static void	draw_textured_column(t_player *p, t_game *game, int x)
 {
-    int             y;
-    t_texture       *tex;
-    int             tex_x;
-    int             tex_y;
-    float           wall_x;
-    float           step;
-    float           tex_pos;
-    unsigned int    color;
+	int				y;
+	int				i;
+	t_texture		*tex;
+	t_draw			draw;
+	char			*pix_addr;
 
-    /* Choix de la texture selon la face du mur */
-    if (p->side == 0)
-    {
-        if (p->raydir_x > 0)
-            tex = &game->textures[0]; // mur Est
-        else
-            tex = &game->textures[1]; // mur Ouest
-    }
-    else
-    {
-        if (p->raydir_y > 0)
-            tex = &game->textures[2]; // mur Sud
-        else
-            tex = &game->textures[3]; // mur Nord
-    }
+	/* sélection de la texture selon la face */
+	if (p->side == 0)
+	{
+		if (p->raydir_x > 0)
+			tex = &game->textures[0]; /* Est */
+		else
+			tex = &game->textures[1]; /* Ouest */
+	}
+	else
+	{
+		if (p->raydir_y > 0)
+			tex = &game->textures[2]; /* Sud */
+		else
+			tex = &game->textures[3]; /* Nord */
+	}
 
-    /* Calcul de l'endroit exact du mur frappé */
-    if (p->side == 0)
-        wall_x = p->pos_y + p->perp_wall_dist * p->raydir_y;
-    else
-        wall_x = p->pos_x + p->perp_wall_dist * p->raydir_x;
-    wall_x -= floorf(wall_x);
+	/* position exacte du point d'impact sur le mur */
+	if (p->side == 0)
+		draw.wall_x = p->pos_y + p->perp_wall_dist * p->raydir_y;
+	else
+		draw.wall_x = p->pos_x + p->perp_wall_dist * p->raydir_x;
+	draw.wall_x -= floorf(draw.wall_x);
 
-    /* Position dans la texture */
-    tex_x = (int)(wall_x * (float)tex->width);
-    if ((p->side == 0 && p->raydir_x < 0) || (p->side == 1 && p->raydir_y > 0))
-        tex_x = tex->width - tex_x - 1;
+	/* coordonnée X dans la texture */
+	draw.tex_x = (int)(draw.wall_x * (float)tex->width);
 
-    /* Calcul du pas de balayage dans la texture */
-    step = (float)tex->height / p->line_height;
-    tex_pos = (float)(p->draw_start - HEIGHT / 2 + p->line_height / 2) * step;
+	/* IMPORTANT : inversion horizontale — signe choisi pour correspondre
+	   au comportement de la première version (celle qui rendait correctement) */
+	if ((p->side == 0 && p->raydir_x > 0) || (p->side == 1 && p->raydir_y < 0))
+		draw.tex_x = tex->width - draw.tex_x - 1;
 
-    y = 0;
-    while (y < HEIGHT)
-    {
-        if (y < p->draw_start)
-        {
-            /* ciel */
-            put_pixel(x, y, game->ceiling_color, game);
-        }
-        else if (y <= p->draw_end)
-        {
-            /* mur texturé */
-            tex_y = (int)tex_pos & (tex->height - 1);
-            color = tex->data[tex_y * tex->width + tex_x];
-            put_pixel(x, y, color, game);
-            tex_pos += step;
-        }
-        else
-        {
-            /* sol */
-            put_pixel(x, y, game->floor_color, game);
-        }
-        y++;
-    }
+	/* préparation du balayage vertical (évite l'étirement) */
+	draw.step = (float)tex->height / (float)p->line_height;
+	draw.tex_pos = (p->draw_start - HEIGHT / 2 + p->line_height / 2) * draw.step;
+
+	draw.bytes_per_pixel = tex->bpp / 8;
+
+	y = 0;
+	while (y < HEIGHT)
+	{
+		if (y < p->draw_start)
+			put_pixel(x, y, game->ceiling_color, game);
+		else if (y <= p->draw_end)
+		{
+			/* mur texturé : calcul tex_y puis adresse du pixel */
+			draw.tex_y = (int)draw.tex_pos;
+			if (draw.tex_y < 0)
+				draw.tex_y = 0;
+			if (draw.tex_y >= tex->height)
+				draw.tex_y = tex->height - 1;
+
+			pix_addr = tex->data + draw.tex_y * tex->line_lgth + draw.tex_x * draw.bytes_per_pixel;
+
+			/* lire la couleur en tenant compte de bpp (on suppose 24/32 bits)
+			   on copie dans unsigned int pour éviter l'aliasing */
+			draw.color = 0;
+			i = 0;
+			while (i < draw.bytes_per_pixel && i < 4)
+			{
+				draw.color |= ((unsigned char)pix_addr[i]) << (8 * i);
+				i++;
+			}
+
+			put_pixel(x, y, draw.color, game);
+			draw.tex_pos += draw.step;
+		}
+		else
+			put_pixel(x, y, game->floor_color, game);
+		y++;
+	}
 }
-
 
 void	raycast(t_player *p, t_game *game)
 {
