@@ -125,7 +125,7 @@ void	init_game(t_game *game)
 		game->textures[i].data = NULL;
 		i++;
 	}
-	game->floor_color = 0xA52A2A;
+	game->floor_color = 10824234;//0xA52A2A;
 	game->ceiling_color = 0x87ceeb;
 	game->mlx = mlx_init();
 	load_textures(game);
