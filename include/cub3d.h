@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/08 20:28:54 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/09 16:38:26 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdbool.h>
 # include <math.h>
 
-# define DEBUG 1
+# define DEBUG 0
 
 # define WIDTH 1280
 # define HEIGHT 720

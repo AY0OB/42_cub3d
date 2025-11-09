@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:35:45 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/08 19:35:41 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/09 16:43:52 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,11 @@ static void	load_texture(t_game *game, t_texture *tex, char *path)
 	}
 	tex->data = mlx_get_data_addr(
 			tex->img, &tex->bpp, &tex->line_lgth, &tex->endian);
+	if (!tex->data)
+	{
+		ft_printf("Erreur : impossible de charger la texture %s\n", path);
+		clear_all(game);
+	}
 }
 
 static void	load_textures(t_game *game)

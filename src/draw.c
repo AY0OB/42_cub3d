@@ -76,7 +76,7 @@ void	draw(t_player *p, t_game *game, int x)
 		draw.wall_x = p->pos_x + p->perp_wall_dist * p->raydir_x;
 	draw.wall_x -= floorf(draw.wall_x);
 	draw.tex_x = (int)(draw.wall_x * (float)tex->width);
-	if ((p->side == 0 && p->raydir_x > 0) || (p->side == 1 && p->raydir_y < 0))
+	if ((p->side == 0 && p->raydir_x < 0) || (p->side == 1 && p->raydir_y > 0))
 		draw.tex_x = tex->width - draw.tex_x - 1;
 	draw.step = (float)tex->height / (float)p->line_height;
 	draw.tex_pos = (p->draw_start - HEIGHT / 2 + p->line_height / 2)
