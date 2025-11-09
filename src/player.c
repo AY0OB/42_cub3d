@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 20:13:55 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 18:38:02 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/09 19:43:49 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,10 @@ static void	move_axis(t_player *p, t_game *game, float moveX, float moveY)
 		map_height++;
 	while (game->map[0][map_width])
 		map_width++;
-	if (newmap_x >= 0 && newmap_x < map_width
+	if (newmap_x >= 0 //&& newmap_x < map_width
 		&& game->map[(int)p->pos_y][newmap_x] == '0')
 		p->pos_x += moveX;
-	if (newmap_y >= 0 && newmap_y < map_height
+	if (newmap_y >= 0 //&& newmap_y < map_height
 		&& game->map[newmap_y][(int)p->pos_x] == '0')
 		p->pos_y += moveY;
 }
