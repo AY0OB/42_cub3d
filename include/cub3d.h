@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/08 17:00:42 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/08 20:28:54 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdbool.h>
 # include <math.h>
 
-# define DEBUG 0
+# define DEBUG 1
 
 # define WIDTH 1280
 # define HEIGHT 720
@@ -126,6 +126,7 @@ int		key_press(int keycode, t_game *g);
 void	move_player(t_game *game, t_player *p);
 
 void	raycast(t_player *p, t_game *game);
+void	draw(t_player *p, t_game *game, int x);
 void	perform_dda(t_player *p, t_game *game, int hit, int steps);
 void	put_pixel(int x, int y, int color, t_game *game);
 

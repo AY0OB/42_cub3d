@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:35:45 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/08 16:04:45 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/08 19:35:41 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ void	init_player(t_player *player)
 	player->pos_y = 5.0;
 	player->dir_x = 0;	//UP
 	player->dir_y = -1;
+	//player->dir_x = 0;	//DOWN
+	//player->dir_y = 1;
+	//player->dir_x = 1;	//RIGHT
+	//player->dir_y = 0;
+	//player->dir_x = -1;	//LEFT
+	//player->dir_y = 0;
 	player->plane_x = 0.66;
 	player->plane_y = 0.0;
 	player->x = 0;
@@ -26,12 +32,6 @@ void	init_player(t_player *player)
 	player->raydir_y = player->dir_y + player->plane_y * player->camera_x;
 	player->map_x = (int)player->pos_x;
 	player->map_y = (int)player->pos_y;
-	//player->dir_x = 0;	//DOWN
-	//player->dir_y = 1;
-	//player->dir_x = 1;	//RIGHT
-	//player->dir_y = 0;
-	//player->dir_x = -1;	//LEFT
-	//player->dir_y = 0;
 	player->k_up = false;
 	player->k_down = false;
 	player->k_left = false;
@@ -101,10 +101,10 @@ static void	load_texture(t_game *game, t_texture *tex, char *path)
 
 static void	load_textures(t_game *game)
 {
-	load_texture(game, &game->textures[0], "./textures/wall_north.xpm");
-	load_texture(game, &game->textures[1], "./textures/wall_south.xpm");
-	load_texture(game, &game->textures[2], "./textures/wall_east.xpm");
-	load_texture(game, &game->textures[3], "./textures/wall_west.xpm");
+	load_texture(game, &game->textures[0], "./textures/wall_east.xpm");
+	load_texture(game, &game->textures[1], "./textures/wall_west.xpm");
+	load_texture(game, &game->textures[2], "./textures/wall_south.xpm");
+	load_texture(game, &game->textures[3], "./textures/wall_north.xpm");
 }
 
 void	init_game(t_game *game)

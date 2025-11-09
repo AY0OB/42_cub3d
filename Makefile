@@ -30,6 +30,7 @@ MLXFLAGS = -lmlx -lX11 -lXext
 SRC =	$(FIC)main.c\
 	$(FIC)init.c\
 	$(FIC)player.c\
+	$(FIC)raycast.c\
 	$(FIC)draw.c\
 	$(FIC)dda.c\
 	$(FIC)put_pixel.c\
