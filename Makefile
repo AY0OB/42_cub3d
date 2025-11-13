@@ -6,7 +6,7 @@
 #    By: amairia <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 13:14:16 by amairia           #+#    #+#              #
-#    Updated: 2025/11/06 18:38:47 by amairia          ###   ########.fr        #
+#    Updated: 2025/11/13 18:50:54 by amairia          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ MLXFLAGS = -lmlx -lX11 -lXext
 
 SRC =	$(FIC)main.c\
 	$(FIC)init.c\
+	$(FIC)secur.c\
 	$(FIC)player.c\
 	$(FIC)raycast.c\
 	$(FIC)draw.c\

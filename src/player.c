@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 20:13:55 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/09 19:43:49 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/13 20:43:57 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,23 @@ static void	move_axis(t_player *p, t_game *game, float moveX, float moveY)
 {
 	int	newmap_x;
 	int	newmap_y;
-	int	map_width;
-	int	map_height;
 
 	newmap_x = (int)(p->pos_x + moveX);
 	newmap_y = (int)(p->pos_y + moveY);
-	map_width = 0;
-	map_height = 0;
-	while (game->map[map_height])
-		map_height++;
-	while (game->map[0][map_width])
-		map_width++;
-	if (newmap_x >= 0 //&& newmap_x < map_width
+	if (game->map_height == 0)
+	{
+		while (game->map[game->map_height])
+			game->map_height++;
+	}
+	if (game->map_width == 0)
+	{
+		while (game->map[0][game->map_width])
+			game->map_width++;
+	}
+	if (newmap_x >= 0 && newmap_x < game->map_width
 		&& game->map[(int)p->pos_y][newmap_x] == '0')
 		p->pos_x += moveX;
-	if (newmap_y >= 0 //&& newmap_y < map_height
+	if (newmap_y >= 0 && newmap_y < game->map_height
 		&& game->map[newmap_y][(int)p->pos_x] == '0')
 		p->pos_y += moveY;
 }

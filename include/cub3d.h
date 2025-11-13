@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/09 16:38:26 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/13 20:57:51 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # define HEIGHT 720
 # define BLOCK 64
 
-
 # define ESC 65307
 # define W 119
 # define A 97
@@ -35,11 +34,10 @@
 # define UP 65362
 # define DOWN 65364
 
+// FOV = PI / 3
+# define FOV 1.0471975511965977461542144610932L
 
-# define PI 3.14159265359
-# define FOV PI / 3
-
-typedef struct	s_player
+typedef struct s_player
 {
 	float	pos_x;
 	float	pos_y;
@@ -77,7 +75,7 @@ typedef struct	s_player
 	bool	r_rotate;
 }		t_player;
 
-typedef struct	s_texture
+typedef struct s_texture
 {
 	void	*img;
 	char	*data;
@@ -88,26 +86,28 @@ typedef struct	s_texture
 	int		endian;
 }		t_texture;
 
-typedef struct	s_game
+typedef struct s_game
 {
-	void	*mlx;
-	void	*window;
-	void	*img;	
-	char	*data;
+	void		*mlx;
+	void		*window;
+	void		*img;	
+	char		*data;
 
-	int		bpp;
-	int		line_lgth;
-	int		endian;
+	int			bpp;
+	int			line_lgth;
+	int			endian;
 
 	t_player	player;
-	char	**map;
-	int		floor_color;
-	int		ceiling_color;
+	char		**map;
+	int			map_width;
+	int			map_height;
+	int			floor_color;
+	int			ceiling_color;
 
 	t_texture	textures[4];
 }		t_game;
 
-typedef struct	s_draw
+typedef struct s_draw
 {
 	int				tex_x;
 	int				tex_y;
@@ -121,6 +121,12 @@ typedef struct	s_draw
 void	init_game(t_game *game);
 void	init_player(t_player *player);
 
+void	mlx_init_sec(t_game *game);
+void	mlx_new_window_sec(t_game *game, int width, int height, char *title);
+void	mlx_xpm_file_to_img_sec(t_game *game,
+			t_texture *tex, char *path, int i);
+void	mlx_get_data_addr_sec(t_game *game, t_texture *tex, char *path, int i);
+
 int		key_release(int keycode, t_player *player);
 int		key_press(int keycode, t_game *g);
 void	move_player(t_game *game, t_player *p);
@@ -130,6 +136,6 @@ void	draw(t_player *p, t_game *game, int x);
 void	perform_dda(t_player *p, t_game *game, int hit, int steps);
 void	put_pixel(int x, int y, int color, t_game *game);
 
-void		clear_all(t_game *game);
+void	clear_all(t_game *game);
 
 #endif

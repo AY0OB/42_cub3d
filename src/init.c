@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:35:45 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/09 19:47:16 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/13 20:42:07 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char	**get_map(void)
 	map[2] = "100010000100001";
 	map[3] = "100100000010001";
 	map[4] = "100010000000001";
-	map[5] = "100101110000001";
+	map[5] = "100100110000001";
 	map[6] = "100010110000001";
 	map[7] = "100000110000001";
 	map[8] = "100000110000001";
@@ -86,53 +86,49 @@ static char	**get_map(void)
 	return (map);
 }
 
-static void	load_texture(t_game *game, t_texture *tex, char *path)
-{
-	tex->img = mlx_xpm_file_to_image(
-			game->mlx, path, &tex->width, &tex->height);
-	if (!tex->img)
-	{
-		ft_printf("Erreur : impossible de charger la texture %s\n", path);
-		clear_all(game);
-	}
-	tex->data = mlx_get_data_addr(
-			tex->img, &tex->bpp, &tex->line_lgth, &tex->endian);
-	if (!tex->data)
-	{
-		ft_printf("Erreur : impossible de charger la texture %s\n", path);
-		clear_all(game);
-	}
-}
-
 static void	load_textures(t_game *game)
 {
-	load_texture(game, &game->textures[0], "./textures/wall_east.xpm");
-	load_texture(game, &game->textures[1], "./textures/wall_west.xpm");
-	load_texture(game, &game->textures[2], "./textures/wall_south.xpm");
-	load_texture(game, &game->textures[3], "./textures/wall_north.xpm");
+	mlx_xpm_file_to_img_sec(game,
+		&game->textures[0], "./textures/wall_east.xpm", 0);
+	mlx_get_data_addr_sec(game,
+		&game->textures[0], "./textures/wall_east.xpm", 0);
+	mlx_xpm_file_to_img_sec(game,
+		&game->textures[1], "./textures/wall_west.xpm", 1);
+	mlx_get_data_addr_sec(game,
+		&game->textures[1], "./textures/wall_west.xpm", 1);
+	mlx_xpm_file_to_img_sec(game,
+		&game->textures[2], "./textures/wall_south.xpm", 2);
+	mlx_get_data_addr_sec(game,
+		&game->textures[2], "./textures/wall_south.xpm", 2);
+	mlx_xpm_file_to_img_sec(game,
+		&game->textures[3], "./textures/wall_north.xpm", 3);
+	mlx_get_data_addr_sec(game,
+		&game->textures[3], "./textures/wall_north.xpm", 3);
 }
 
 void	init_game(t_game *game)
 {
-	int	i;
-
 	init_player(&game->player);
-	i = 0;
-	while (i < 4)
-	{
-		game->textures[i].width = 0;
-		game->textures[i].height = 0;
-		game->textures[i].data = NULL;
-		i++;
-	}
 	game->floor_color = 10824234;//0xA52A2A;
 	game->ceiling_color = 0x87ceeb;
-	game->mlx = mlx_init();
+	mlx_init_sec(game);
 	load_textures(game);
 	game->map = get_map();
-	game->window = mlx_new_window(game->mlx, WIDTH, HEIGHT, "Recasting test");
+	game->map_width = 0;
+	game->map_height = 0;
+	mlx_new_window_sec(game, WIDTH, HEIGHT, "Recasting test");
 	game->img = mlx_new_image(game->mlx, WIDTH, HEIGHT);
+	if (!(game->img))
+	{
+		ft_printf("Failed to creates a new image\n");
+		clear_all(game);
+	}
 	game->data = mlx_get_data_addr(game->img, &game->bpp,
 			&game->line_lgth, &game->endian);
+	if (!(game->data))
+	{
+		ft_printf("Data of main img cant be charged\n");
+		clear_all(game);
+	}
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 }
