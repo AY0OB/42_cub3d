@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 16:32:32 by amairia           #+#    #+#             */
-/*   Updated: 2024/10/12 20:32:38 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/15 05:41:19 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -27,7 +27,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	while (i < len && big[i])
 	{
 		if (big[i] == little[0])
-			if (ft_strncmp(big + i, little, litt_len) == 0 \
+			if (ft_strncmp(big + i, little, litt_len) == 0
 				&& big_len >= litt_len)
 				return (res + i);
 		i++;

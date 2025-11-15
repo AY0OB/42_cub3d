@@ -6,20 +6,20 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 20:28:16 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 14:39:58 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/15 05:38:24 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
 
-static void	free_map(char ***map)
+static void	free_map(char **map)
 {
-	/*int	i;
+	int	i;
 
 	i = 0;
-	while (map[0][i])
-		free(map[0][i++]);*/
-	free(map[0]);
+	while (map[i])
+		free(map[i++]);
+	free(map);
 }
 
 static void	free_textures(t_game *game)
@@ -53,7 +53,7 @@ void	clear_all(t_game *game)
 			free(game->mlx);
 		}
 		if (game->map)
-			free_map(&game->map);
+			free_map(game->map);
 	}
 	exit(0);
 }

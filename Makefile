@@ -6,7 +6,7 @@
 #    By: amairia <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 13:14:16 by amairia           #+#    #+#              #
-#    Updated: 2025/11/13 18:50:54 by amairia          ###   ########.fr        #
+#    Updated: 2025/11/15 04:36:42 by amairia          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,14 @@ SRC =	$(FIC)main.c\
 	$(FIC)dda.c\
 	$(FIC)put_pixel.c\
 	$(FIC)clear_all.c\
+	$(FIC)cube_fill_nswe.c\
+	$(FIC)cube_parser_check.c\
+	$(FIC)cube_parser_dispatch.c\
+	$(FIC)cube_parser_map.c\
+	$(FIC)cube_parser_utils.c\
+	$(FIC)cube_parser.c\
+	$(FIC)feed_game_data.c
+
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/13 20:57:51 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/15 05:24:07 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,49 @@
 
 # include "../libft/libft.h"
 # include "../minilibx-linux/mlx.h"
+# include <stdio.h>
+# include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
+
+/*PARSING*/
+
+typedef struct s_data
+{
+	char	**tab;
+	char	*token;
+	char	*no;
+	char	*so;
+	char	*we;
+	char	*ea;
+	int		fc[2][3];
+	int		player[3];
+	char	*map[129];
+}	t_data;
+
+void	cube_abort(t_data *game, char *str);
+void	cube_dispatch(t_data *game);
+int		cube_check_fc(char *str);
+void	cube_check_first_half(t_data *game);
+int		cube_check_line(t_data *game, int cur);
+void	cube_check_map(t_data *game, int len);
+int		cube_check_nswefc(t_data *game);
+void	cube_check_second_half(t_data *game);
+int		cube_check_surrounding(t_data *game, int i, int j);
+void	cube_copy_map(t_data *game, int cur, int len);
+void	cube_fill_east(t_data *game, int cur);
+void	cube_fill_fc(t_data *game, int cur);
+void	cube_fill_map(t_data *game, int cur);
+void	cube_fill_north(t_data *game, int cur);
+void	cube_fill_south(t_data *game, int cur);
+void	cube_fill_tab(t_data *game, char *source, int size);
+void	cube_fill_west(t_data *game, int cur);
+void	cube_free2dstr(char **strs);
+void	cube_free_data(t_data *game);
+int		cube_height(char *source);
+void	cube_parser(int argc, char **argv, t_data *game);
+int		cube_where_are_you(t_data *game, int i, int j);
+int		ft_isspace(char c);
 
 # define DEBUG 0
 
@@ -33,9 +74,6 @@
 # define RIGHT 65363
 # define UP 65362
 # define DOWN 65364
-
-// FOV = PI / 3
-# define FOV 1.0471975511965977461542144610932L
 
 typedef struct s_player
 {
@@ -118,8 +156,9 @@ typedef struct s_draw
 	int				bytes_per_pixel;
 }		t_draw;
 
-void	init_game(t_game *game);
+void	init_game(t_game *game, t_data *data);
 void	init_player(t_player *player);
+void	feed_game_data(t_game *game, t_data *data);
 
 void	mlx_init_sec(t_game *game);
 void	mlx_new_window_sec(t_game *game, int width, int height, char *title);

@@ -104,7 +104,7 @@ int	main()
   printf(" => Connection ...");
   if (!(mlx = mlx_init()))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   printf("OK (use_xshm %d pshm_format %d)\n",((t_xvar *)mlx)->use_xshm,((t_xvar *)mlx)->pshm_format);
@@ -112,7 +112,7 @@ int	main()
   printf(" => Window1 %dx%d \"Title 1\" ...",WIN1_SX,WIN1_SY);
   if (!(win1 = mlx_new_window(mlx,WIN1_SX,WIN1_SY,"Title1")))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   printf("OK\n");
@@ -130,7 +130,7 @@ int	main()
   printf(" => Image1 ZPixmap %dx%d ...",IM1_SX,IM1_SY);
   if (!(im1 = mlx_new_image(mlx,IM1_SX,IM1_SY)))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   data1 = mlx_get_data_addr(im1,&bpp1,&sl1,&endian1);
@@ -154,7 +154,7 @@ int	main()
   printf(" => Image3 ZPixmap %dx%d ...",IM3_SX,IM3_SY);
   if (!(im3 = mlx_new_image(mlx,IM3_SX,IM3_SY)))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   data3 = mlx_get_data_addr(im3,&bpp3,&sl3,&endian3);
@@ -173,37 +173,37 @@ int	main()
   printf(" => String ...");
   mlx_string_put(mlx,win1,5,WIN1_SY/2,0xFF99FF,"String output");
   mlx_string_put(mlx,win1,15,WIN1_SY/2+20,0x00FFFF,"MinilibX test");
-  printf("OK\n");
+ printf("OK\n");
   sleep(2);
 
-  printf(" => Xpm from file ...");
+ printf(" => Xpm from file ...");
   if (!(im2 = mlx_xpm_file_to_image(mlx,"open.xpm",&xpm1_x,&xpm1_y)))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   data2 = mlx_get_data_addr(im2,&bpp2,&sl2,&endian2);
-  printf("OK (xpm %dx%d)(img bpp2: %d, sizeline2: %d endian: %d type: %d)\n",
+ printf("OK (xpm %dx%d)(img bpp2: %d, sizeline2: %d endian: %d type: %d)\n",
 	 xpm1_x,xpm1_y,bpp2,sl2,endian2,((t_img *)im2)->type);
   sleep(2);
 
-  printf(" => Put xpm ...");
+ printf(" => Put xpm ...");
   mlx_put_image_to_window(mlx,win1,im2,0,0);
   mlx_put_image_to_window(mlx,win1,im2,100,100);
-  printf("OK\n");
+ printf("OK\n");
   sleep(2);
 
-  printf(" => 2nd window,");
+ printf(" => 2nd window,");
   win2 = mlx_new_window(mlx,WIN1_SX,WIN1_SY,"Title2");
   if (!(im4 = mlx_new_image(mlx,IM3_SX, IM3_SY)))
     {
-      printf(" !! KO !!\n");
+     printf(" !! KO !!\n");
       exit(1);
     }
   data4 = mlx_get_data_addr(im4,&bpp4,&sl4,&endian4);
   color_map_2(data4,bpp4,sl4,IM3_SX,IM3_SY,endian4, 2);
 
-  printf(" 3rd window, Installing hooks ...");
+ printf(" 3rd window, Installing hooks ...");
   win3 = mlx_new_window(mlx,WIN1_SX,WIN1_SY,"Title3");
   mlx_expose_hook(win1,expose_win1,0);
   mlx_mouse_hook(win1,mouse_win1,0);
@@ -215,7 +215,7 @@ int	main()
 
   mlx_hook(win3, MotionNotify, PointerMotionMask, mouse_win3, 0);
 
-  printf("OK\nNow in Loop. Just play. Esc in 3 to destroy, 1&2 to quit.\n");
+ printf("OK\nNow in Loop. Just play. Esc in 3 to destroy, 1&2 to quit.\n");
   
   mlx_loop(mlx);
 }
@@ -251,7 +251,7 @@ int	color_map_2(unsigned char *data,int bpp,int sl,int w,int h,int endian, int t
   unsigned char *ptr;
 
   opp = bpp/8;
-  printf("(opp : %d) ",opp);
+ printf("(opp : %d) ",opp);
   y = h;
   while (y--)
     {

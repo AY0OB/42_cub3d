@@ -6,26 +6,11 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:28:56 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/06 18:40:06 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/15 05:39:40 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/cub3d.h"
-
-void	draw_square(int x, int y, int size, int color, t_game *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		put_pixel(x + i, y, color, game);
-		put_pixel(x, y + i, color, game);
-		put_pixel(x + i, y + size, color, game);
-		put_pixel(x + size, y + i, color, game);
-		i++;
-	}
-}
 
 void	clear_img(t_game *game)
 {
@@ -45,29 +30,6 @@ void	clear_img(t_game *game)
 	}
 }
 
-void	draw_map(t_game *game)
-{
-	char	**map;
-	int		color;
-	int		x;
-	int		y;
-
-	map = game->map;
-	color = 0x0000FF;
-	y = 0;
-	while (map[y])
-	{
-		x = 0;
-		while (map[y][x])
-		{
-			if (map[y][x] == '1')
-				draw_square(x * BLOCK, y * BLOCK, BLOCK, color, game);
-			x++;
-		}
-		y++;
-	}
-}
-
 int	draw_loop(t_game *game)
 {
 	t_player	*p;
@@ -75,13 +37,7 @@ int	draw_loop(t_game *game)
 	p = &game->player;
 	move_player(game, p);
 	clear_img(game);
-	if (DEBUG == 1)
-	{
-		draw_square(p->pos_x * BLOCK, p->pos_y * BLOCK, 6, 0x00FF00, game);
-		draw_map(game);
-	}
-	if (DEBUG == 0)
-		raycast(p, game);
+	raycast(p, game);
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 	return (0);
 }
@@ -93,12 +49,17 @@ static int	close_window(t_game *game)
 	return (0);
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_game	game;
+	t_data	data;
 
+	ft_bzero(&data, sizeof(t_data));
+	data.token = "01NSWE";
+	cube_parser(ac, av, &data);
 	ft_memset(&game, 0, sizeof(game));
-	init_game(&game);
+	init_game(&game, &data);
+	cube_free_data(&data);
 	mlx_hook(game.window, 17, 0, close_window, &game);
 	mlx_hook(game.window, 2, 1L << 0, key_press, &game);
 	mlx_hook(game.window, 3, 1L << 1, key_release, &game.player);
