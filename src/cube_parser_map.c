@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/11/14 01:59:59 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/11/16 22:24:18 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,6 @@ int	cube_where_are_you(t_data *game, int i, int j)
 	game->player[0] = i;
 	game->player[1] = j;
 	game->player[2] = game->map[i][j];
-	/*if (game->map[i][j] == 'N')
-		game->player[2] = 0;
-	if (game->map[i][j] == 'S')
-		game->player[2] = 1;
-	if (game->map[i][j] == 'W')
-		game->player[2] = 2;
-	if (game->map[i][j] == 'E')
-		game->player[2] = 3;*/
 	return (1);
 }
 

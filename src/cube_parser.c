@@ -21,7 +21,7 @@ int	cube_height(char *source)
 	fd = open(source, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("Error: read");
+		perror("Error: open");
 		exit(1);
 	}
 	line = get_next_line(fd);
@@ -44,7 +44,7 @@ void	cube_fill_tab(t_data *game, char *source, int size)
 	fd = open(source, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("Error: read");
+		perror("Error: open");
 		exit(1);
 	}
 	game->tab = malloc(sizeof(char *) * size);
