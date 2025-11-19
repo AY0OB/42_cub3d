@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/11/14 23:44:52 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/11/17 18:15:25 by ledupont         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,6 @@ void	cube_dispatch(t_data *game)
 	int	i;
 
 	i = -1;
-	game->fc[0][0] = -1;
-	game->fc[1][0] = -1;
-	game->player[0] = -1;
 	while (game->tab[++i])
 	{
 		if (ft_strncmp(game->tab[i], "NO ", 3) == 0)
@@ -62,5 +59,4 @@ void	cube_dispatch(t_data *game)
 	}
 	cube_check_first_half(game);
 	cube_fill_map(game, i);
-	cube_check_map(game, ft_strlen(game->map[0]));
 }

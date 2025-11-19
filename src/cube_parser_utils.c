@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/11/10 23:52:39 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:52:43 by ledupont         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,6 @@ void	cube_free_data(t_data *game)
 void	cube_abort(t_data *game, char *str)
 {
 	cube_free_data(game);
-	perror(str);
+	ft_printf_fd(2, str);
 	exit(1);
 }

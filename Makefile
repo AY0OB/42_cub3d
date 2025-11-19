@@ -17,6 +17,9 @@ CUB3D = src/cub3d.a
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
+PRINTF_FD_DIR = ft_printf_fd
+PRINTF_FD = $(PRINTF_FD_DIR)/libftprintf_fd.a
+
 FIC = src/
 MINILIBX_DIR = minilibx-linux
 MINILIBX = -L./$(MINILIBX_DIR)/
@@ -42,12 +45,11 @@ SRC =	$(FIC)main.c\
 	$(FIC)cube_parser_map.c\
 	$(FIC)cube_parser_utils.c\
 	$(FIC)cube_parser.c\
-	$(FIC)feed_game_data.c
-
+	$(FIC)feed_game_data.c\
 
 OBJ = $(SRC:.c=.o)
 
-$(NAME) : $(CUB3D) $(LIBFT) $(MINILIBX)
+$(NAME) : $(CUB3D) $(LIBFT) $(MINILIBX) $(PRINTF_FD)
 	$(CC) -o $@ $^ $(MLXFLAGS) $(CFLAGS) $(MTH)
 
 %.o: %.c
@@ -62,16 +64,21 @@ $(LIBFT) :
 $(MINILIBX) :
 	$(MAKE) -C $(MINILIBX_DIR) all
 
+$(PRINTF_FD) :
+	$(MAKE) -C $(PRINTF_FD_DIR)
+
 all : $(NAME)
 
 clean :
 	rm -f $(OBJ) $(CUB3D)
+	$(MAKE) -C $(PRINTF_FD_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) clean
 	$(MAKE) -C $(MINILIBX_DIR) clean
 
 fclean : clean
 	rm -f $(NAME)
 	rm -f $(LIBFT)
+	rm -f $(PRINTF_FD)
 
 re : fclean all
 

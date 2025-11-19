@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/11/14 22:03:01 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/11/17 18:15:23 by ledupont         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	cube_height(char *source)
 	fd = open(source, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("Error: open");
+		ft_printf_fd(2, "Error: open");
 		exit(1);
 	}
 	line = get_next_line(fd);
@@ -44,13 +44,13 @@ void	cube_fill_tab(t_data *game, char *source, int size)
 	fd = open(source, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("Error: open");
+		ft_printf_fd(2, "Error: open");
 		exit(1);
 	}
 	game->tab = malloc(sizeof(char *) * size);
 	if (!game->tab)
 	{
-		perror("Error: malloc fail");
+		ft_printf_fd(2, "Error: malloc fail");
 		exit(1);
 	}
 	i = 0;
@@ -71,15 +71,19 @@ void	cube_parser(int argc, char **argv, t_data *game)
 
 	if (argc != 2)
 	{
-		perror("Error: wrong count of argument(s)");
+		ft_printf_fd(2, "Error: wrong count of argument(s)");
 		exit(1);
 	}
 	if (ft_strncmp(argv[1] + (ft_strlen(argv[1]) - 4), ".cub", 4) != 0)
 	{
-		perror("Error: wrong format");
+		ft_printf_fd(2, "Error: wrong format");
 		exit(1);
 	}
 	i = cube_height(argv[1]);
 	cube_fill_tab(game, argv[1], i);
+	game->fc[0][0] = -1;
+	game->fc[1][0] = -1;
+	game->player[0] = -1;
 	cube_dispatch(game);
+	cube_check_map(game, ft_strlen(game->map[0]));
 }
