@@ -6,7 +6,7 @@
 /*   By: amairia <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:35:45 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/15 05:40:14 by amairia          ###   ########.fr       */
+/*   Updated: 2025/11/19 01:57:53 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	init_game(t_game *game, t_data *data)
 	game->img = mlx_new_image(game->mlx, WIDTH, HEIGHT);
 	if (!(game->img))
 	{
-		ft_printf("Failed to creates a new image\n");
+		ft_printf_fd(2, "Failed to creates a new image\n");
 		clear_all(game);
 	}
 	game->data = mlx_get_data_addr(game->img, &game->bpp,
 			&game->line_lgth, &game->endian);
 	if (!(game->data))
 	{
-		ft_printf("Data of main img cant be charged\n");
+		ft_printf_fd(2, "Data of main img cant be charged\n");
 		clear_all(game);
 	}
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);

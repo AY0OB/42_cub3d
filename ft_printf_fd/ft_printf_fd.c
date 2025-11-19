@@ -100,19 +100,3 @@ int	ft_printf_fd(int fd, const char *s, ...)
 	va_end(args);
 	return (l);
 }
-/*
-int	main(int argc, char **argv)
-{
-	(void)argc;
-	ft_printf_fd(2, "%s", argv[1]);
-	return (0);
-}
-
-#include <stdio.h>
-
-int	main(void)
-{
-	printf("%d\n", printf("je mange %d patates\n", -100));
-	ft_printf("%d\n", ft_printf("je mange %d patates\n", -100));
-	return (0);
-}*/
