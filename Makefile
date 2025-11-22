@@ -6,7 +6,7 @@
 #    By: amairia <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 13:14:16 by amairia           #+#    #+#              #
-#    Updated: 2025/11/15 04:36:42 by amairia          ###   ########.fr        #
+#    Updated: 2025/11/22 21:19:52 by amairia          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ PRINTF_FD_DIR = ft_printf_fd
 PRINTF_FD = $(PRINTF_FD_DIR)/libftprintf_fd.a
 
 FIC = src/
+FICPARS = src_pars/
 MINILIBX_DIR = minilibx-linux
 MINILIBX = -L./$(MINILIBX_DIR)/
 
@@ -39,13 +40,13 @@ SRC =	$(FIC)main.c\
 	$(FIC)dda.c\
 	$(FIC)put_pixel.c\
 	$(FIC)clear_all.c\
-	$(FIC)cube_fill_nswe.c\
-	$(FIC)cube_parser_check.c\
-	$(FIC)cube_parser_dispatch.c\
-	$(FIC)cube_parser_map.c\
-	$(FIC)cube_parser_utils.c\
-	$(FIC)cube_parser.c\
 	$(FIC)feed_game_data.c\
+	$(FICPARS)cube_fill_nswe.c\
+	$(FICPARS)cube_parser_check.c\
+	$(FICPARS)cube_parser_dispatch.c\
+	$(FICPARS)cube_parser_map.c\
+	$(FICPARS)cube_parser_utils.c\
+	$(FICPARS)cube_parser.c\
 
 OBJ = $(SRC:.c=.o)
 
