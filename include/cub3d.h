@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 17:29:11 by amairia           #+#    #+#             */
-/*   Updated: 2025/11/17 17:52:12 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/11/23 21:19:07 by amairia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ int		cube_height(char *source);
 void	cube_parser(int argc, char **argv, t_data *game);
 int		cube_where_are_you(t_data *game, int i, int j);
 int		ft_isspace(char c);
-
-# define DEBUG 0
 
 # define WIDTH 1280
 # define HEIGHT 720
