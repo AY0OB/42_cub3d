@@ -6,7 +6,7 @@
 #    By: amairia <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 13:14:16 by amairia           #+#    #+#              #
-#    Updated: 2025/11/22 21:19:52 by amairia          ###   ########.fr        #
+#    Updated: 2025/11/24 21:10:21 by amairia          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,8 @@ SRC =	$(FIC)main.c\
 
 OBJ = $(SRC:.c=.o)
 
+all : $(NAME)
+
 $(NAME) : $(CUB3D) $(LIBFT) $(MINILIBX) $(PRINTF_FD)
 	$(CC) -o $@ $^ $(MLXFLAGS) $(CFLAGS) $(MTH)
 
@@ -67,8 +69,6 @@ $(MINILIBX) :
 
 $(PRINTF_FD) :
 	$(MAKE) -C $(PRINTF_FD_DIR)
-
-all : $(NAME)
 
 clean :
 	rm -f $(OBJ) $(CUB3D)
