@@ -6,7 +6,7 @@
 #    By: amairia <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 13:14:16 by amairia           #+#    #+#              #
-#    Updated: 2025/12/01 19:06:35 by amairia          ###   ########.fr        #
+#    Updated: 2025/12/02 17:53:04 by amairia          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,21 +55,21 @@ SRC =	$(FIC)main.c\
 
 OBJ = $(SRC:.c=.o)
 
-SRC_BNS =	$(FIC_BNS)main.c\
-		$(FIC_BNS)init.c\
-		$(FIC_BNS)init_player.c\
-		$(FIC_BNS)secur.c\
-		$(FIC_BNS)player.c\
-		$(FIC_BNS)mouse.c\
-		$(FIC_BNS)door.c\
-		$(FIC_BNS)raycast.c\
-		$(FIC_BNS)minimap.c\
-		$(FIC_BNS)draw.c\
-		$(FIC_BNS)cube_sprite.c\
-		$(FIC_BNS)dda.c\
-		$(FIC_BNS)put_pixel.c\
-		$(FIC_BNS)clear_all.c\
-		$(FIC_BNS)feed_game_data.c\
+SRC_BNS =	$(FIC_BNS)main_bonus.c\
+		$(FIC_BNS)init_bonus.c\
+		$(FIC_BNS)init_player_bonus.c\
+		$(FIC_BNS)secur_bonus.c\
+		$(FIC_BNS)player_bonus.c\
+		$(FIC_BNS)mouse_bonus.c\
+		$(FIC_BNS)door_bonus.c\
+		$(FIC_BNS)raycast_bonus.c\
+		$(FIC_BNS)minimap_bonus.c\
+		$(FIC_BNS)draw_bonus.c\
+		$(FIC_BNS)cube_sprite_bonus.c\
+		$(FIC_BNS)dda_bonus.c\
+		$(FIC_BNS)put_pixel_bonus.c\
+		$(FIC_BNS)clear_all_bonus.c\
+		$(FIC_BNS)feed_game_data_bonus.c\
 		$(FICPARS_BNS)cube_fill_nswe_bonus.c\
 		$(FICPARS_BNS)cube_parser_check_bonus.c\
 		$(FICPARS_BNS)cube_parser_dispatch_bonus.c\
