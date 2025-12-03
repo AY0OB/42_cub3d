@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/12/01 23:42:18 by amairia          ###   ########.fr       */
+/*   Updated: 2025/12/03 00:08:06 by ledupont         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	cube_fill_tab(t_data *game, char *source, int size)
 	game->tab = malloc(sizeof(char *) * size);
 	if (!game->tab)
 	{
+		close(fd);
 		ft_printf_fd(2, "Error: malloc fail\n");
 		exit(1);
 	}
@@ -89,7 +90,6 @@ void	cube_fill_tab(t_data *game, char *source, int size)
 			game->tab[i][ft_strlen(game->tab[i]) - 1] = '\0';
 		game->tab[++i] = get_next_line(fd);
 	}
-	game->tab[i] = NULL;
 	close(fd);
 }
 

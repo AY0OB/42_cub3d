@@ -1,0 +1,10 @@
+NO textures/stone.xpm
+SO textures/more_stone.xpm
+WE textures/again_stone.xpm
+EA textures/another_stone.xpm
+CD textures/door.xpm
+
+C 10,50,250
+F 120,120,100
+
+

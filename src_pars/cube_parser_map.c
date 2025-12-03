@@ -6,7 +6,7 @@
 /*   By: ledupont <ledupont@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 11:42:55 by ledupont          #+#    #+#             */
-/*   Updated: 2025/11/23 21:51:15 by ledupont         ###   ########.fr       */
+/*   Updated: 2025/12/02 22:26:50 by ledupont         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,29 +93,29 @@ void	cube_copy_map(t_data *game, int cur, int len)
 
 void	cube_fill_map(t_data *game, int cur)
 {
-	int	i;
-	int	sl[2];
+	int	i[4];
 
-	sl[0] = 0;
-	sl[1] = 0;
+	i[0] = 0;
+	i[1] = 0;
+	i[2] = 1;
 	while (game->tab[++cur])
 	{
-		i = -1;
-		while (game->tab[cur][++i])
+		i[3] = -1;
+		while (game->tab[cur][++i[3]])
 		{
-			if (!sl[0] && ft_strchr(game->token, game->tab[cur][i]))
-				sl[0] = cur;
-			if (game->tab[cur][i] != ' ' && !ft_isspace(game->tab[cur][i])
-				&& !ft_strchr(game->token, game->tab[cur][i]))
+			if (!i[0] && ft_strchr(game->token, game->tab[cur][i[3]]))
+				i[0] = cur;
+			if (game->tab[cur][i[3]] != ' ' && !ft_isspace(game->tab[cur][i[3]])
+				&& !ft_strchr(game->token, game->tab[cur][i[3]]))
 				cube_abort(game, "Error: invalid line/map character\n");
-			if (sl[0] && game->tab[cur][i] != ' '
-				&& !ft_strchr(game->token, game->tab[cur][i]))
+			if (i[0] && game->tab[cur][i[3]] != ' '
+				&& !ft_strchr(game->token, game->tab[cur][i[3]]))
 				cube_abort(game, "Error: invalid map character\n");
 		}
-		if (sl[0] && i > sl[1])
-			sl[1] = i;
+		if (i[0] && i[3] > i[1])
+			i[1] = i[3];
+		if (!i[0] || !i[1] || i[2]++ > 128 || i[1] > 128)
+			cube_abort(game, "Error: map missing/map too big\n");
 	}
-	if (!sl[0] || !sl[1])
-		cube_abort(game, "Error: map unavailable\n");
-	cube_copy_map(game, sl[0], sl[1]);
+	cube_copy_map(game, i[0], i[1]);
 }
